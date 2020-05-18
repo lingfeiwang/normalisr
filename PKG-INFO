@@ -1,0 +1,20 @@
+Metadata-Version: 1.1
+Name: normalisr
+Version: 0.4.0
+Summary: Normalisr Offers Robust Modelling of Associations Linearly In Single-cell RNA-seq
+Home-page: https://github.com/lingfeiwang/normalisr
+Author: Lingfei Wang
+Author-email: Lingfei.Wang.github@outlook.com
+License: BSD-3-Clause
+Download-URL: https://github.com/lingfeiwang/normalisr
+Description: Normalisr is a parameter-free normalization-association two-step inferential framework for scRNA-seq that solves case-control DE, co-expression, and pooled CRISPRi scRNA-seq screen under one umbrella of linear association testing. Normalisr addresses sparsity and technical confounding challenges of scRNA-seq with posterior mRNA abundances, nonlinear cellular summary covariates, and mean and variance normalization. All these enable linear association testing to achieve optimal sensitivity, specificity, and speed in all above scenarios.
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Environment :: Console
+Classifier: Framework :: Pytest
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics

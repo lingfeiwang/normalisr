@@ -1,0 +1,2 @@
+include COPYING COPYRIGHT LICENSE README.md UPDATES KNOWN_ISSUES
+recursive-include examples *.md *.sh *.py *.ipynb *.xz

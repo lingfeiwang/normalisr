@@ -1,0 +1,12 @@
+0.4.0:
+Complete revamp of user interface.
+
+0.3.2:
+Allows differential and co-expression computation without input covariates (though not recommended).
+Added UPDATES file.
+
+0.3.1:
+Allows to perform covariate normalization (in normcov) without adding constant 1 covariate. Useful for non-final covariate normalization.
+Allows (but not recommended unless for very large datasets) to trade accuracy for speed in normalisr.association.inv_rank and its callers.
+Added known issues in README.
+Various minor improvments and bug corrections.
