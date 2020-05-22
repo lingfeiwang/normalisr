@@ -45,13 +45,8 @@ You can always use the python command to run Normalisr, such as `python3 -m norm
 
 * Does Normalisr run on Windows?
 
-I have not tested Normalisr on Windows. However, it is purely python and should be able to function properly.
+I have not tested Normalisr on Windows. However, it is purely in python and should be able to function properly.
 
 ## Citation
 Please cite our preprint if you use Normalisr:
 * TBA
-
-
-
-## Known issues:
-Python library multiprocessing can't deal with very large data transfer for parallel computing, causing error "struct.error: 'i' format requires -2147483648 <= number <= 2147483647" in python 3.6 or lower.

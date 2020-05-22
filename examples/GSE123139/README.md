@@ -21,6 +21,7 @@ MARS-seq of T cells from human melanoma. This example contains two sub-examples 
 	* data/coex/lvX_goe.tsv.gz: table of gene ontology enrichment of master regulators;
 	* data/coex/1_gene.txt: gene names as rows and columns of co-expression result matrices;
 	* X in lvX indicates the number of GO pathway covariates removed, for a more cell-type-specific co-expression network.
+3. See simple visualizations of the output in folder ipynb.
 
 ### Option 2: analyses with python
 1. For differential expression, read and run jupyter notebook at ./code/notebook_de.ipynb.

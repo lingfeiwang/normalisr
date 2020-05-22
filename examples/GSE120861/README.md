@@ -15,7 +15,7 @@ High-MOI CRISPRi CROP-seq pilot dataset for enhancer and gene-regulation screens
 	* data/highmoi/1_gene.txt: gene names as columns of above files;
 	* data/highmoi/0_gRNA.txt: gRNA names as rows of above files;
 	* X=7 for competition-naive method, and 8 for competition-aware method.
-2. See simple plots of the output in folder ipynb.
+2. See simple visualizations of the output in folder ipynb.
 
 ### Option 2: analyses with python
 Read and run jupyter notebook at ./code/notebook_highmoi.ipynb

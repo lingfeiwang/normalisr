@@ -1,3 +1,3 @@
 Here are several examples to demonstrate Normalisr's use. They are adapted for downsampled, small-scale demonstrations but can be applied on larger datasets straight-away. These examples are not meant to exactly reproduce results of the manuscript, although results can be highly similar, because some functions are missing (e.g. removal of cells from individuals with very few cells of the same cell type).
 
-See readme.md in each example folder for more details.
+See README.md in each example folder for more details.
