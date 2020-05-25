@@ -4,6 +4,9 @@ import numpy as np
 from os.path import join as pjoin
 from os import linesep
 from shutil import copyfile
+from scipy.io import mmwrite
+from scipy.sparse import coo_matrix
+import gzip
 
 diri='data/raw'
 diro='data/de'
@@ -49,7 +52,9 @@ with open(pjoin(diro,'0_cell.txt'),'w') as f:
 #Process transcriptome
 dt=np.loadtxt(pjoin(diri,'read.tsv.gz'),delimiter='\t')
 dtn=dt[:,ida]
-np.savetxt(pjoin(diro,'0_read.tsv.gz'),dtn,delimiter='\t',fmt="%u")
+dtn=coo_matrix(dtn)
+with gzip.open(pjoin(diro,'0_read.mtx.gz'),'w') as f:
+	mmwrite(f,dtn,field='integer')
 
 #Process grouping
 dg=np.zeros(len(ida),dtype=int)

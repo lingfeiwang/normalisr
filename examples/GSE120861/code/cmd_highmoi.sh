@@ -3,9 +3,9 @@
 set -x -e -o pipefail
 
 #Step 1: Find low-read genes and cells for removal
-normalisr -v qc_reads data/highmoi/0_read.tsv.gz data/highmoi/0_gene.txt data/highmoi/0_cell.txt data/highmoi/1_gene.txt data/highmoi/1_cell.txt
+normalisr -v qc_reads -s data/highmoi/0_read.mtx.gz data/highmoi/0_gene.txt data/highmoi/0_cell.txt data/highmoi/1_gene.txt data/highmoi/1_cell.txt
 #Step 2: Remove found low-read genes and cells, and single-valued covariates
-normalisr -v subset -r data/highmoi/0_gene.txt data/highmoi/1_gene.txt -c data/highmoi/0_cell.txt data/highmoi/1_cell.txt data/highmoi/0_read.tsv.gz data/highmoi/2_read.tsv.gz
+normalisr -v subset -s -r data/highmoi/0_gene.txt data/highmoi/1_gene.txt -c data/highmoi/0_cell.txt data/highmoi/1_cell.txt data/highmoi/0_read.mtx.gz data/highmoi/2_read.tsv.gz
 normalisr -v subset --nodummy -c data/highmoi/0_cell.txt data/highmoi/1_cell.txt data/highmoi/0_cov.tsv.gz data/highmoi/2_cov.tsv.gz
 normalisr -v subset -c data/highmoi/0_cell.txt data/highmoi/1_cell.txt data/highmoi/0_group.tsv.gz data/highmoi/2_group.tsv.gz
 #Step 3: Convert read counts to Bayesian logCPM with cellular summary covariates

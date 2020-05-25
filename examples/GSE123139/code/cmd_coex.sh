@@ -16,9 +16,9 @@ lvmax=5
 qcut="1E-8"
 
 #Step 1: Find low-read genes and cells for removal
-normalisr "$verbose" qc_reads --gene_cell_count 500 data/coex/0_read.tsv.gz data/coex/0_gene.txt data/coex/0_cell.txt data/coex/1_gene.txt data/coex/1_cell.txt
+normalisr "$verbose" qc_reads -s --gene_cell_count 500 data/coex/0_read.mtx.gz data/coex/0_gene.txt data/coex/0_cell.txt data/coex/1_gene.txt data/coex/1_cell.txt
 #Step 2: Remove found low-read genes and cells, and single-valued covariates
-normalisr "$verbose" subset -r data/coex/0_gene.txt data/coex/1_gene.txt -c data/coex/0_cell.txt data/coex/1_cell.txt data/coex/0_read.tsv.gz data/coex/2_read.tsv.gz
+normalisr "$verbose" subset -s -r data/coex/0_gene.txt data/coex/1_gene.txt -c data/coex/0_cell.txt data/coex/1_cell.txt data/coex/0_read.mtx.gz data/coex/2_read.tsv.gz
 normalisr "$verbose" subset --nodummy -c data/coex/0_cell.txt data/coex/1_cell.txt data/coex/0_cov.tsv.gz data/coex/2_cov.tsv.gz
 #Step 3: Convert read counts to Bayesian logCPM with cellular summary covariates
 normalisr "$verbose" lcpm -c data/coex/2_cov.tsv.gz data/coex/2_read.tsv.gz data/coex/3_lcpm.tsv.gz data/coex/3_scale.tsv.gz data/coex/3_cov.tsv.gz

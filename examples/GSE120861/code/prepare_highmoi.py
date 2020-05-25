@@ -5,7 +5,8 @@ import numpy as np
 import pandas as pd
 import gzip
 import itertools
-from scipy.io import mmread
+from scipy.io import mmread,mmwrite
+from scipy.sparse import coo_matrix
 from os.path import join as pjoin
 from os import linesep
 
@@ -211,10 +212,12 @@ dt=mmread(fm).astype(int)
 dt=dt.tocsr()
 dt=dt[:,namesselect]
 dt=dt.toarray()
+dt=coo_matrix(dt)
 assert dt.shape==(nt,ns)
 
 #Output data
-np.savetxt(pjoin(diro,'0_read.tsv.gz'),dt,delimiter='\t',fmt=fmt_i)
+with gzip.open(pjoin(diro,'0_read.mtx.gz'),'w') as f:
+    mmwrite(f,dt,field='integer')
 np.savetxt(pjoin(diro,'0_cov.tsv.gz'),dc,delimiter='\t',fmt=fmt_f)
 np.savetxt(pjoin(diro,'0_group.tsv.gz'),dg,delimiter='\t',fmt=fmt_i)
 with open(pjoin(diro,'0_gene.txt'),'w') as f:

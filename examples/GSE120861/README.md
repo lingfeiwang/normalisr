@@ -4,9 +4,8 @@ High-MOI CRISPRi CROP-seq pilot dataset for enhancer and gene-regulation screens
 
 ## Usage
 ### Data preparation
-1. (Optional) This example uses 15 non-targeting and 15 TSS-targeting gRNAs and around 7,000 cells to work on 16GB of memory. For full or downsampled performance, change variable ng_negselect, ng_tssselect, ng_other, droprate_ng, and droprate_g in code/prepare_highmoi.py.
-2. Enter GSE120861 as the working directory.
-3. Run ./code/prepare.sh to download and convert dataset into Normalisr's tsv format. See prepared inputs in data/highmoi.
+1. Enter GSE120861 as the working directory.
+2. Run ./code/prepare.sh to download and convert dataset into Normalisr's tsv format. See prepared inputs in data/highmoi.
 
 ### Option 1: analyses at command line
 1. Read and run ./code/cmd_highmoi.sh to see each step. Final outputs are:
@@ -21,7 +20,8 @@ High-MOI CRISPRi CROP-seq pilot dataset for enhancer and gene-regulation screens
 Read and run jupyter notebook at ./code/notebook_highmoi.ipynb
 
 ## Next
-Reformat your own dataset and run Normalisr, or try the full-scale dataset also in GSE120861!
+1. Redo the analyses with full dataset. This example uses 15 non-targeting and 15 TSS-targeting gRNAs and around 7,000 cells to work on 16GB of memory. Start from a clean example folder. Change variable ng_negselect, ng_tssselect, ng_other, droprate_ng, and droprate_g in code/prepare_highmoi.py. Then rerun the full example again.
+2. Reformat your own dataset and run Normalisr, or try the full-scale dataset also in GSE120861!
 
 ## Data references
 * https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120861
