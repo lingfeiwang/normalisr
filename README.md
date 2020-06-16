@@ -5,8 +5,8 @@ Normalisr follows the conventional framework of normalization/imputation of scRN
 
 Normalisr is written in Python3 and provides a command-line and a python functional interface. You can read more about Normalisr from our preprint (See [Citations](#citations)).
 
-## Install
-Normalisr is on PyPI (link TBA) and can be installed straightaway with pip (TB-uploaded): `pip install normalisr`. You can also install Normalisr from github (link TBD): `pip install`. Make sure you have added Normalisr's install path into PATH environment before using the command-line interface (See [FAQ](#faq)).
+## Installation
+Normalisr is on PyPI (link TBA) and can be installed straightaway with pip (TB-uploaded): `pip install normalisr`. You can also install Normalisr from github: `pip install git+https://github.com/lingfeiwang/normalisr.git`. Make sure you have added Normalisr's install path into PATH environment before using the command-line interface (See [FAQ](#faq)). Normalisr's installation should take less than a minute.
 
 There are more advanced installation methods but if you want that, most likely you already know how to do it ;). If not, give me a shout (See [Contact](#contact)).
 
