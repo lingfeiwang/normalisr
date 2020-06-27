@@ -1,28 +1,41 @@
 #!/usr/bin/python3
 
 def inv_rank(m,tol=1E-8,method='auto',logger=None,mpc=0,qr=0,**ka):
-	"""Outputs matrix inverse and rank with SVD. Allows low-rank matrix.
+	"""Computes matrix (pseudo-)inverse and rank with SVD.
+
 	Broadcasts to the last 2 dimensions of the matrix.
-	m:		np.array([...,n,n]) as matrix to be inverted
-	tol:	Eigenvalues < tol*maximum eigenvalue are treated as zero
-	method:	Method to compute eigenvalues:
-		auto:	Uses scipy for n<mpc or mpc==0 and sklearn otherwise
-		scipy:	Uses scipy.linalg.svd
-		scipys:	NOT IMPLEMENTED.Uses scipy.sparse.linalg.svds
-		sklearn:Uses sklearn.decomposition.TruncatedSVD
-	logger:	logger to output warning. Defaults (None) to logging module
-	mpc:	Maximum rank or number of principal components to consider.
-			Defaults to 0 to disable limit.
-			For very large input matrix, use a small value (e.g. 100) to save time at the cost of accuracy.
-	qr:		Whether to use QR decomposition for matrix inverse.
-			Only effective when method=sklearn, or =auto and defaults to sklearn.
-		0:	No
-		1:	Yes with default settings
-		2+:	Yes with n_iter=qr for sklearn.utils.extmath.randomized_svd
+
+	Parameters
+	----------
+	m : np.array([...,n,n])
+		Matrix to be inverted
+	tol : float
+		Eigenvalues < tol*maximum eigenvalue are treated as zero.
+	method : str
+		Method to compute eigenvalues:
+		* auto:	Uses scipy for n<mpc or mpc==0 and sklearn otherwise
+		* scipy: Uses scipy.linalg.svd
+		* scipys: NOT IMPLEMENTED.Uses scipy.sparse.linalg.svds
+		* sklearn: Uses sklearn.decomposition.TruncatedSVD
+	logger : object
+		Logger to output warning. Defaults (None) to logging module
+	mpc : int
+		Maximum rank or number of principal components to consider.
+		Defaults to 0 to disable limit.
+		For very large input matrix, use a small value (e.g. 100) to save time at the cost of accuracy.
+	qr : int
+		Whether to use QR decomposition for matrix inverse.
+		Only effective when method=sklearn, or =auto and defaults to sklearn.
+		* 0:	No
+		* 1:	Yes with default settings
+		* 2+:	Yes with n_iter=qr for sklearn.utils.extmath.randomized_svd
 	ka:	Keyword args passed to method
-	Return: (mi,r)
+
+	Returns
+	-------
 	mi:	np.array([...,n,n]) as inverse matrices
 	r:	np.array([...]) or int as ranks
+
 	"""
 	import numpy as np
 	from numpy.linalg import LinAlgError
@@ -111,6 +124,7 @@ def inv_rank(m,tol=1E-8,method='auto',logger=None,mpc=0,qr=0,**ka):
 
 def gexpand_add(dg):
 	"""Expand genotype using additive model.
+
 	dg:		numpy.array([ng,nd],dtype='u1') as input genotype matrix.
 	dge:	numpy.array([ng,1,nd],dtype='u1') as output expanded genotype matrix."""
 	dge=dg.reshape(dg.shape[0],1,dg.shape[1]).astype('u1')
@@ -118,6 +132,7 @@ def gexpand_add(dg):
 
 def gexpand_cat(dg):
 	"""Expand genotype using categorical model.
+
 	dg:		numpy.array([ng,nd],dtype='u1') as input genotype matrix.
 	dge:	numpy.array([ng,n-1,nd],dtype='u1') as output expanded genotype matrix.
 	n:		Number of unique values in dg."""
@@ -130,6 +145,7 @@ def gexpand_cat(dg):
 
 def association_test_1(vx,vy,dx,dy,dc,dci,dcr,dimreduce=0):
 	"""Fast association testing in single-cell non-cohort settings with covariates.
+
 	Single threaded version to allow for parallel computing from outside.
 	Mainly used for naive differential expression and co-expression.
 	Computes the p-value of null (gamma=0) in model Y=X*gamma+C*alpha+epsilon,
@@ -203,6 +219,7 @@ def association_test_1(vx,vy,dx,dy,dc,dci,dcr,dimreduce=0):
 
 def association_test_2(vx,vy,dx,dy,dc,sselectx,dimreduce=0):
 	"""Like association_test_1, but takes a different subset of samples for each X.
+
 	See association_test_1 for details on unexplained variables.
 	sselectx:	numpy.array(shape=(nx,ns),bool). Subset of samples to use for each X.
 	Return:		Same as association_test_1, except:
@@ -279,6 +296,7 @@ def prod1(vx,vy,dx,dy):
 
 def association_test_4(vx,vy,prod,prody,prodyy,na,dimreduce=0,**ka):
 	"""Like association_test_1, but regards all other X's as covariates when testing each X.
+
 	See association_test_1 for details on unexplained variables.
 	Note:	Other X's are treated as covariates but would not include their alphas in return to reduce memory footprint.
 	vx,

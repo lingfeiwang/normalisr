@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Normalisr &#8212; Normalisr  documentation</title>
+    <link rel="stylesheet" href="static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+    <script src="static/jquery.js"></script>
+    <script src="static/underscore.js"></script>
+    <script src="static/doctools.js"></script>
+    <script src="static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User API" href="user_api.html" />
+    <link rel="prev" title="Welcome to Normalisr’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="normalisr">
+<h1>Normalisr<a class="headerlink" href="#normalisr" title="Permalink to this headline">¶</a></h1>
+<p>Normalisr is a parameter-free normalization-association two-step inferential framework for scRNA-seq that solves case-control differential expression, co-expression, and pooled CRISPRi scRNA-seq screen under one umbrella of linear association testing. Normalisr addresses sparsity and technical confounding challenges of scRNA-seq with posterior mRNA abundances, nonlinear cellular summary covariates, and mean and variance normalization. All these enable linear association testing to achieve optimal sensitivity, specificity, and speed in all above scenarios.</p>
+<p>Normalisr follows the conventional framework of normalization/imputation of scRNA-seq, and aims to recover the true, biological, but hidden expression levels which any analyses may then operate upon. Then, linear association testing provides a unified inferential framework with numerous advantages: (i) exact P-value estimation without permutation, (ii) native removal of covariates as fixed effects, (iii) non-parametric robustness, (iv) unbeatable time and memory complexities, and (v) extension potentials such as variations in genetic relatedness.</p>
+<p>Normalisr is written in Python3 and provides a command-line and a python functional interface. You can read more about Normalisr from our preprint (See <a class="reference internal" href="#citations">Citations</a>).</p>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Normalisr is on PyPI (link TBA) and can be installed straightaway with pip (TB-uploaded): <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">normalisr</span></code>. You can also install Normalisr from github: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">git+https://github.com/lingfeiwang/normalisr.git</span></code>. Make sure you have added Normalisr’s install path into PATH environment before using the command-line interface (See <a class="reference internal" href="#faq">FAQ</a>). Normalisr’s installation should take less than a minute.</p>
+<p>There are more advanced installation methods but if you want that, most likely you already know how to do it ;). If not, give me a shout (See <a class="reference internal" href="#contact">Contact</a>).</p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Normalisr provides a command-line and a python functional interface below. You can use the examples provided below to guide yourself through Normalisr’s use. Sphinx-based documentation is underway.</p>
+<ul>
+<li><dl>
+<dt>Commmand-line interface</dt><dd><p>You can run Normalisr by typing <code class="docutils literal notranslate"><span class="pre">normalisr</span></code> on command-line. Normalisr uses submodules for different analysis steps. Type <code class="docutils literal notranslate"><span class="pre">normalisr</span></code> or <code class="docutils literal notranslate"><span class="pre">normalisr</span> <span class="pre">-h</span></code> for general help, and for example <code class="docutils literal notranslate"><span class="pre">normalisr</span> <span class="pre">de</span> <span class="pre">-h</span></code> for help on submodule ‘de’ of differential expression.</p>
+<p>Normalisr uses tsv (tab separated values) file format for input and output matrices, and text file for row and column names, such as cells and genes, one per line. For initial input, Normalisr also accepts the sparse mtx format (Cell Ranger output) for raw read count matrix. Gzipped input/output files are automatically recognized if file name suffix ‘.gz’ is present.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Python functional interface</dt><dd><p>Normalisr’s python functional interface is more flexible than command-line, but requires knowledge of python programming. Documentation of any function can be obtained with <code class="docutils literal notranslate"><span class="pre">?</span></code> in ipython or jupyter notebook, such as:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">normalisr.normalisr</span> <span class="k">as</span> <span class="nn">norm</span>
+<span class="o">?</span>norm.de
+</pre></div>
+</div>
+<p>The example jupyter notebooks also illustrate the scope of functions Normalisr provides.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>Documentations are available as <a class="reference external" href="https://lingfeiwang.github.io/normalisr/index.html">html</a> and <a class="reference external" href="https://github.com/lingfeiwang/normalisr/blob/master/docs/build/latex/normalisr.pdf">pdf</a>.</p>
+</div>
+<div class="section" id="examples-and-pipelines">
+<h2>Examples and pipelines<a class="headerlink" href="#examples-and-pipelines" title="Permalink to this headline">¶</a></h2>
+<p>You can find several examples in the ‘examples’ folder, to cover all functions Normalisr currently provides. The example datasets have been scaled down to run on a 16GB-memory personal computer. Although they only serve as demonstrations of work here, the pipelines should be transferable to a full-scale, different dataset. Since Normalisr is non-parametric, the only adjustable parameters are for quality control and final cutoffs of differential or co-expression. You can change down-sampling parameters in the examples to run the full datasets on a larger computer.</p>
+<p>You can find more details in the respective examples.</p>
+</div>
+<div class="section" id="contact">
+<h2>Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h2>
+<p>We look forward to your feedbacks or questions of any kind.</p>
+<ul class="simple">
+<li><p>Regarding method and manuscript, please reach me by email (<a class="reference external" href="mailto:Lingfei&#46;Wang&#46;CN&#37;&#52;&#48;gmail&#46;com">Lingfei<span>&#46;</span>Wang<span>&#46;</span>CN<span>&#64;</span>gmail<span>&#46;</span>com</a>).</p></li>
+<li><p>Regarding Normalisr package, please raise an issue on <a class="reference external" href="https://github.com/lingfeiwang/normalisr/issues/new">github</a> or reach me by email (<a class="reference external" href="mailto:Lingfei&#46;Wang&#46;github&#37;&#52;&#48;outlook&#46;com">Lingfei<span>&#46;</span>Wang<span>&#46;</span>github<span>&#64;</span>outlook<span>&#46;</span>com</a>).</p></li>
+</ul>
+</div>
+<div class="section" id="citations">
+<h2>Citations<a class="headerlink" href="#citations" title="Permalink to this headline">¶</a></h2>
+<p>Please cite our preprint if you use Normalisr:</p>
+<ul class="simple">
+<li><p>TBA</p></li>
+</ul>
+</div>
+<div class="section" id="faq">
+<h2>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><dl class="simple">
+<dt>What does Normalisr stand for?</dt><dd><p><strong>N</strong>ormalisr <strong>O</strong>ffers <strong>R</strong>obust <strong>M</strong>odelling of <strong>A</strong>ssociations <strong>L</strong>inearly <strong>I</strong>n <strong>S</strong>ingle-cell <strong>R</strong>NA-seq. Yes, it’s a recursive acronym. See <a class="reference external" href="https://www.gnu.org/gnu/gnu-history.en.html">GNU</a> and <a class="reference external" href="http://www.ianbicking.org/blog/2008/10/28/pyinstall-is-dead-long-live-pip/index.html">pip</a>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>I installed Normalisr but typing <code class="docutils literal notranslate"><span class="pre">normalisr</span></code> says ‘command not found’.</dt><dd><p></p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>How do I use a specific python version for Normalisr’s command-line interface?</dt><dd><p>You can always use the python command to run Normalisr, such as <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">normalisr</span></code> to replace command <code class="docutils literal notranslate"><span class="pre">normalisr</span></code>. You can also use a specific path or version for python, such as <code class="docutils literal notranslate"><span class="pre">python3.7</span> <span class="pre">-m</span> <span class="pre">normalisr</span></code> or <code class="docutils literal notranslate"><span class="pre">/usr/bin/python3.7</span> <span class="pre">-m</span> <span class="pre">normalisr</span></code>. Make sure you have installed Normalisr for this python version.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Why don’t the examples work?</dt><dd><p>Please make sure you followed every step in the README.md of the respective example folder with Internet connection, and then submit an issue report detailing at which executed line the error occurred with input and output.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Does Normalisr run on Windows?</dt><dd><p>I have not tested Normalisr on Windows. However, it is purely in python and should be able to function properly.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Normalisr</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples-and-pipelines">Examples and pipelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#citations">Citations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#faq">FAQ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user_api.html">User API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="all_api.html">All API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Normalisr’s documentation!</a></li>
+      <li>Next: <a href="user_api.html" title="next chapter">User API</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Lingfei Wang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="sources/quickstart.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

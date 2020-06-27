@@ -2,6 +2,7 @@
 
 def nodiag(d,split=False):
 	"""Removes diagonals from 2D matrix.
+
 	d:	numpy.array(shape=[n1,n2]) Input matrix
 	split:	Whether to output list of 1D arrays for each row.
 	Return:	If split:	[numpy.array(shape=[n2 or n2-1])] List of 1D arrays for each row.
@@ -20,7 +21,8 @@ def nodiag(d,split=False):
 	return ans
 
 def rediag(d,fill=0,shape=None):
-	"""Convert a nodiag'ed' vector back to matrix of original shape.
+	"""Convert a 'nodiag'ed vector back to matrix of original shape.
+
 	d: numpy.array(shape=[n]) of output array from nodiag(.,split=False)
 	fill: Values to fill in the diagonal entries
 	shape: Specify the shape of original matrix. If omitted, assume original is a square matrix.
@@ -50,6 +52,7 @@ def rediag(d,fill=0,shape=None):
 
 def bh(pv,weight=None):
 	"""Convert P-values to Q-values using Benjamini–Hochberg procedure
+
 	pv:		1D numpy.array of P-values
 	weight:	Weight of each P-value. Defaults to equal.
 	Return:	1D numpy.array of Q-values
@@ -92,11 +95,22 @@ def bh(pv,weight=None):
 	return ans
 
 def binnet(net,qcut):
-	"""Binarize P-value co-expresion network to thresholded Q-value network.
-	Q-values are computed separately per row to account for differences in the number of genes co-expressed, especially by master regulators.
-	net:		P-value matrix as numpy.array(shape=[n_gene,n_gene])
-	qcut:		Cutoff for Q-value network
-	Return:		Binariy matrix as numpy.array(shape=[n_gene,n_gene],dtype=bool)
+	"""Binarizes P-value co-expresion network to thresholded Q-value network.
+
+	Q-values are computed separately per row to account for differences in the number of genes co-expressed, especially by master regulators, using Benjamini–Hochberg procedure. Co-expression Q-value matrix is thresholded for return.
+
+	Parameters
+	----------
+	net:	numpy.ndarray(shape=(n_gene,n_gene),dtype=float)
+		Symmetric co-expression P-value matrix.
+	qcut:	float
+		Cutoff for Q-value network.
+
+	Returns
+	-------
+	numpy.ndarray(shape=(n_gene,n_gene),dtype=bool)
+		Binarized, assymmetric co-expression matrix.
+
 	"""
 	import numpy as np
 	assert net.ndim==2

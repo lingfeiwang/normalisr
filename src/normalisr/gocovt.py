@@ -24,7 +24,7 @@ def goe(genelist,go_file,goa_file,bg=None,nmin=5,conversion=None,evidence_set= {
 	go_file,
 	goa_file:	Files for GO definitions and GO associations.
 	bg:			Background gene list
-	nmin:		Minimum number of master regulator genes required in GO
+	nmin:		Minimum number of principal genes required in GO
 	conversion:	(name_from,name_to,species) if gene list needs conversion to gene ID systems in the GO annotation.
 				Names of gene naming systems can be found at https://docs.mygene.info/en/latest/doc/data.html.
 		name_from:	Gene naming system of genelist. For gene names, use 'symbol,alias'
@@ -151,35 +151,49 @@ def goe(genelist,go_file,goa_file,bg=None,nmin=5,conversion=None,evidence_set= {
 	return (ans,gotop,genes)
 
 def gotop(net,namet,go_file,goa_file,n=100,**ka):
-	"""Find the top GO enrichment of top master regulators with most co-expressed genes in the co-expression network.
-	Background genes are all in namet.
-	net:		Binary network matrix as numpy.array(shape=[n_gene,n_gene])
-	namet:		List of gene names
-	go_file:	Path of GO DAG file
-	goa_file:	Path of GO annotation file
-	n:			Number of top master regulators to include for GO enrichment.
-	ka:			IMPORTANT: Keyword args passed to goe to determine how to perform GO enrichment.
-				If you see no gene mapped, check your gene name conversion rule in conversion parameter of goe.
-				GO annotation have a specific gene ID system.
-	Return:		(masters,goe,gotop,genes)
-	masters:	List of master regulator genes
-	goe:		Pandas DataFrame of GO enrichment
-	gotop:		Top enriched GO ID
-	genes:		Genes in the gotop from the bg list.
+	"""Finds the top variable GO enrichment of top principal genes in the binary co-expression network.
+
+	Principal genes are those with most co-expressed genes. They reflect the most variable pathways in the dataset. When the variable pathways are housekeeping related, they may conceal cell-type-specific co-expression patterns from being observed and understood. This function identifies the most variable pathway with gene ontology enrichment study of the top principal genes. Background genes are all genes provided.
+
+	Parameters
+	-----------
+	net:		numpy.ndarray(shape=(n_gene,n_gene),dtype=bool)
+		Binary co-expression network matrix.
+	namet:		list of str
+		Gene names matching the rows and columns of net.
+	go_file:	str
+		Path of GO DAG file
+	goa_file:	str
+		Path of GO annotation file
+	n:			int
+		Number of top principal genes to include for GO enrichment. Default is 100, giving good performance in general.
+	ka:			dict
+		**IMPORTANT**: Keyword arguments passed to normalisr.gocovt.goe to determine how to perform GO enrichment study. If you see no gene mapped, check your gene name conversion rule in conversion parameter of goe. GO annotation have a specific gene ID system.
+
+	Returns
+	-------
+	principals:	list of str
+		List of principal genes.
+	goe:		pandas.DataFrame
+		GO enrichment results.
+	gotop:		str
+		Top enriched GO ID.
+	genes:		list of str
+		List of genes in the gotop GO ID.
 	"""
 	import numpy as np
 	nt=len(namet)
 	if net.shape!=(nt,nt) or nt<=1:
 		raise ValueError('Wrong shape of net or namet.')
 	if n<=1 or n>=nt:
-		raise ValueError('Number of master regulators must be from 1 to the number of all genes (exclusive).')
+		raise ValueError('Number of principal genes must be from 1 to the number of all genes (exclusive).')
 
-	#Find master regulators
+	#Find principal genes
 	t1=net.sum(axis=1)
 	t2=t1[t1.argsort()[::-1][n]]
 
 	if t2==0:
-		raise RuntimeError('Not enough master regulators that have co-expression')
+		raise RuntimeError('Not enough principal genes that have co-expression')
 	t2=np.nonzero(t1>=t2)[0]
 	assert len(t2)>=n
 	assert len(t2)<nt
@@ -188,13 +202,27 @@ def gotop(net,namet,go_file,goa_file,n=100,**ka):
 	return tuple([t1]+list(goe(t1,go_file,goa_file,bg=t2,**ka)))
 
 def pccovt(dt,dc,namet,genes,condcov=True):
-	""""Introduce the top principal component of normalized expression of selected genes as a covariate
-	dt:		numpy.array(shape=[n_gene,n_cell]) as normalized expression
-	dc:		numpy.array(shape=[n_cov,n_cell]) as normalized covariates
-	namet:	List of gene names for dt
-	genes:	List of gene names to include in finding PC1 of their expression as covariate.
-	condcov:Whether to conditional on existing covariates before computing PC
-	Return: numpy.array(shape=[n_cov+1,n_cell]) as new normalized covariates
+	"""Introduces an extra covariate from the top principal component of given genes.
+
+	The extra covariate is the top principal component of normalized expressions of the selected genes. Adding a covariate from housekeeping pathway can reveal cell-type-specific activities in co-expression networks.
+
+	Parameters
+	----------
+	dt:		numpy.ndarray(shape=(n_gene,n_cell))
+		Normalized expression matrix.
+	dc:		numpy.ndarray(shape=(n_cov,n_cell))
+	 	Existing normalized covariate matrix.
+	namet:	list of str
+		List of gene names for rows in dt.
+	genes:	list of str
+		List of gene names to include in finding top PC of their expression as an extra covariate.
+	condcov:bool
+		Whether to condition on existing covariates before computing top PC. Default: True.
+
+	Returns
+	-------
+	numpy.ndarray(shape=(n_cov+1,n_cell))
+		New normalized covariate matrix.
 	"""
 	import numpy as np
 	nt,ns=dt.shape

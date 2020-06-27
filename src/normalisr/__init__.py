@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-__all__=['association','binnet','coex','de','gocovt','lcpm','norm','parallel','qc','run']
+__all__=['association','binnet','coex','de','gocovt','lcpm','norm','normalisr','parallel','qc','run']
 
 from . import *
 

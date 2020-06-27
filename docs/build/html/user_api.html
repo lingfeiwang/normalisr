@@ -1,0 +1,578 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User API &#8212; Normalisr  documentation</title>
+    <link rel="stylesheet" href="static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+    <script src="static/jquery.js"></script>
+    <script src="static/underscore.js"></script>
+    <script src="static/doctools.js"></script>
+    <script src="static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="All API" href="all_api.html" />
+    <link rel="prev" title="Normalisr" href="quickstart.html" />
+   
+  <link rel="stylesheet" href="static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="user-api">
+<h1>User API<a class="headerlink" href="#user-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="quality-control">
+<h2>Quality control<a class="headerlink" href="#quality-control" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#normalisr.normalisr.qc_reads" title="normalisr.normalisr.qc_reads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qc_reads</span></code></a></p></td>
+<td><p>Quality control by bounding UMI read counts.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#normalisr.normalisr.qc_outlier" title="normalisr.normalisr.qc_outlier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qc_outlier</span></code></a></p></td>
+<td><p>Quality control by removing cell outliers by variance.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="normalization">
+<h2>Normalization<a class="headerlink" href="#normalization" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#normalisr.normalisr.lcpm" title="normalisr.normalisr.lcpm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcpm</span></code></a></p></td>
+<td><p>Computes Bayesian log CPM from raw UMI read counts.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#normalisr.normalisr.normcov" title="normalisr.normalisr.normcov"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normcov</span></code></a></p></td>
+<td><p>Normalizes each continuous covariate to 0 mean and unit variance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#normalisr.normalisr.scaling_factor" title="normalisr.normalisr.scaling_factor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scaling_factor</span></code></a></p></td>
+<td><p>Computes scaling factor of variance normalization for every gene.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#normalisr.normalisr.compute_var" title="normalisr.normalisr.compute_var"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_var</span></code></a></p></td>
+<td><p>Computes variance normalization scale for each cell.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#normalisr.normalisr.normvar" title="normalisr.normalisr.normvar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normvar</span></code></a></p></td>
+<td><p>Performs mean and variance normalizations.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="differential-expression">
+<h2>Differential expression<a class="headerlink" href="#differential-expression" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#normalisr.normalisr.de" title="normalisr.normalisr.de"><code class="xref py py-obj docutils literal notranslate"><span class="pre">de</span></code></a></p></td>
+<td><p>Performs differential expression analyses for all genes against all groupings.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="co-expression">
+<h2>Co-expression<a class="headerlink" href="#co-expression" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#normalisr.normalisr.coex" title="normalisr.normalisr.coex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coex</span></code></a></p></td>
+<td><p>Performs co-expression analyses for all gene pairs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#normalisr.normalisr.binnet" title="normalisr.normalisr.binnet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binnet</span></code></a></p></td>
+<td><p>Binarizes P-value co-expresion network to thresholded Q-value network.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#normalisr.normalisr.gotop" title="normalisr.normalisr.gotop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gotop</span></code></a></p></td>
+<td><p>Finds the top variable GO enrichment of top principal genes in the binary co-expression network.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#normalisr.normalisr.pccovt" title="normalisr.normalisr.pccovt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pccovt</span></code></a></p></td>
+<td><p>Introduces an extra covariate from the top principal component of given genes.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="module-normalisr.normalisr">
+<span id="api-list"></span><h2>API list<a class="headerlink" href="#module-normalisr.normalisr" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="normalisr.normalisr.binnet">
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">binnet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net</span></em>, <em class="sig-param"><span class="n">qcut</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.binnet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Binarizes P-value co-expresion network to thresholded Q-value network.</p>
+<p>Q-values are computed separately per row to account for differences in the number of genes co-expressed, especially by master regulators, using Benjamini–Hochberg procedure. Co-expression Q-value matrix is thresholded for return.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>net</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_gene</em><em>)</em><em>,</em><em>dtype=float</em><em>)</em>) – Symmetric co-expression P-value matrix.</p></li>
+<li><p><strong>qcut</strong> (<em>float</em>) – Cutoff for Q-value network.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Binarized, assymmetric co-expression matrix.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray(shape=(n_gene,n_gene),dtype=bool)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="normalisr.normalisr.coex">
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">coex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">bs</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">ka</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.coex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs co-expression analyses for all gene pairs.</p>
+<p>Performs parallel computation with multiple processes on the same machine.</p>
+<dl>
+<dt>Model for co-expression between genes i &amp; j:</dt><dd><p>X_i=gamma*X_j+alpha*C+epsilon,</p>
+<p>epsilon~i.i.d. N(0,sigma**2).</p>
+</dd>
+</dl>
+<p>Test statistic: conditional R**2 (or proportion of variance explained) between X_i and X_j.</p>
+<p>Null hypothesis: gamma=0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype=float</em><em>)</em>) – Normalized expression matrix X.</p></li>
+<li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype=float</em><em>)</em>) – Normalized covariate matrix C.</p></li>
+<li><p><strong>bs</strong> (<em>int</em>) – Batch size, i.e. number of genes in each computing batch. Use 0 for default: Data transfer limited to 1GB, capped at bs=500.</p></li>
+<li><p><strong>nth</strong> (<em>int</em>) – Number of parallel processes. Set to 0 for using automatically detected CPU counts.</p></li>
+<li><p><strong>ka</strong> (<em>dict</em>) – Keyword arguments passed to normalisr.association.association_test_1. See below.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>P-values</strong> (<em>numpy.ndarray(shape=(n_gene,n_gene))</em>) – Co-expression P-value matrix.</p></li>
+<li><p><strong>dot</strong> (<em>numpy.ndarray(shape=(n_gene,n_gene))</em>) – Inner product of expression between gene pairs, after removing covariates.</p></li>
+<li><p><strong>var</strong> (<em>numpy.ndarray(shape=(n_gene))</em>) – Variance of gene expression after removing covariates. Pearson R=(((dot/numpy.sqrt(var)).T)/numpy.sqrt(var)).T.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>dimreduce</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>)</em><em>,</em><em>dtype=int</em><em>) or </em><em>int</em>) – If dt doesn’t have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="normalisr.normalisr.compute_var">
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">compute_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">stepmax</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">1e-06</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.compute_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes variance normalization scale for each cell.</p>
+<p>Performs a log-linear fit of the variance of each cell with covariates. Optionally use EM-like method to iteratively fit mean and variance. For EM-like method, early-stopping is suggested because of overfitting issues.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>)</em><em></em>) – Bayesian LogCPM expression level matrix.</p></li>
+<li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>)</em><em></em>) – Covariate matrix.</p></li>
+<li><p><strong>stepmax</strong> (<em>int</em>) – Maximum number of EM-like iterations of mean and variance normalization. Stop of iteration is also possible when relative accuracy target is reached. Defaults to 1, indicating no iterative normalization.</p></li>
+<li><p><strong>eps</strong> (<em>float</em>) – Relative accuracy target for early stopping. Constrains the maximum relative difference of fitted variance across cells compared to the last step. Defaults to 1E-6.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Inverse sqrt of fitted variance for each cell, i.e. the multiplier for variance normalization. For iterative normalization, the optimal step will be returned, defined as having the minimal max relative change across cells.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray(shape=(n_cell,))</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="normalisr.normalisr.de">
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">de</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dg</span></em>, <em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">bs</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">single</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">ka</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.de" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs differential expression analyses for all genes against all groupings.</p>
+<p>Allows multiple options to treat other groupings when testing on one grouping.</p>
+<p>Performs parallel computation with multiple processes on the same machine.</p>
+<dl>
+<dt>Model for differential expression between gene Y and grouping X:</dt><dd><p>Y=gamma*X+alpha*C+epsilon,</p>
+<p>epsilon~i.i.d. N(0,sigma**2).</p>
+</dd>
+</dl>
+<p>Test statistic: conditional R**2 (or proportion of variance explained) between Y and X.</p>
+<p>Null hypothesis: gamma=0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dg</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_group</em><em>,</em><em>n_cell</em><em>)</em><em>)</em><em></em>) – Grouping matrix for a list of X to be tested, e.g. grouping by gene knock-out.</p></li>
+<li><p><strong>dt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype=float</em><em>)</em>) – Normalized expression matrix Y.</p></li>
+<li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype=float</em><em>)</em>) – Normalized covariate matrix C.</p></li>
+<li><p><strong>bs</strong> (<em>int</em>) – Batch size, i.e. number of groupings and genes in each computing batch.
+For single=0,1, splits groupings &amp; genes. Defaults to 500.
+For single=4, only allows bs=0 (default automatic setting).</p></li>
+<li><p><strong>nth</strong> (<em>int</em>) – Number of parallel processes. Set to 0 for using automatically detected CPU counts.</p></li>
+<li><p><strong>single</strong> (<em>int</em>) – <p>Option to deal with other groupings when testing one groupings v.s. gene expression.</p>
+<ul>
+<li><p>0:    Ignores other groupings.</p></li>
+<li><p>1:    Excludes all cells belonging to any other grouping (value==1), assuming dg=0,1 only.</p></li>
+<li><p>4:    Treats other groupings as covariates for mean expression.</p></li>
+</ul>
+</p></li>
+<li><p><strong>ka</strong> (<em>dict</em>) – Keyword arguments passed to normalisr.association.association_test_*. See below.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>P-values</strong> (<em>numpy.ndarray(shape=(n_group,n_gene))</em>) – Differential expression P-value matrix.</p></li>
+<li><p><strong>gamma</strong> (<em>numpy.ndarray(shape=(n_group,n_gene))</em>) – Differential expression log fold change matrix.</p></li>
+<li><p><strong>alpha</strong> (<em>numpy.ndarray(shape=(n_group,n_gene,n_cov))</em>) – Maximum likelihood estimators of alpha, separatly tested for each grouping.</p></li>
+<li><p><strong>varg</strong> (<em>numpy.ndarray(shape=(n_group))</em>) – Variance of grouping after removing covariates.</p></li>
+<li><p><strong>vart</strong> (<em>numpy.ndarray(shape=(n_group,n_gene))</em>) – Variance of gene expression after removing covariates.
+It can depend on the grouping being tested depending on parameter single.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dimreduce</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>)</em><em>,</em><em>dtype=int</em><em>) or </em><em>int</em>) – If dt doesn’t have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>only for single=4</em>) – <p>Method to compute eigenvalues in SVD-based matrix inverse (for removal of covariates):</p>
+<ul>
+<li><p>auto: Uses scipy for n_matrix&lt;mpc or mpc==0 and sklearn otherwise. Default.</p></li>
+<li><p>scipy: Uses scipy.linalg.svd.</p></li>
+<li><p>scipys: NOT IMPLEMENTED.Uses scipy.sparse.linalg.svds.</p></li>
+<li><p>sklearn: Uses sklearn.decomposition.TruncatedSVD.</p></li>
+</ul>
+</p></li>
+<li><p><strong>mpc</strong> (<em>int</em><em>, </em><em>only for single=4</em>) – Uses only the top mpc singular values as non-zero in SVD-based matrix inverse. Here effectively reduces covariates to their top principal components. This reduction is performed after including other groupings as additional covariates. Defaults to 0 to disable dimension reduction. For very large grouping matrix, use a small value (e.g. 100) to save time at the cost of accuracy.</p></li>
+<li><p><strong>qr</strong> (<em>int</em><em>, </em><em>only for single=4</em>) – <p>Whether to use QR decomposition method for SVD in matrix inverse. Only effective when method=sklearn, or =auto and defaults to sklearn. Takes the following values:</p>
+<ul>
+<li><p>0:    No (default).</p></li>
+<li><p>1:    Yes with default settings.</p></li>
+<li><p>2+:   Yes with n_iter=qr for sklearn.utils.extmath.randomized_svd.</p></li>
+</ul>
+</p></li>
+<li><p><strong>tol</strong> (<em>float</em><em>, </em><em>only for single=4</em>) – Eigenvalues &lt; tol*(maximum eigenvalue) are treated as zero in SVD-based matrix inverse. Default is 1E-8.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="normalisr.normalisr.gotop">
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">gotop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net</span></em>, <em class="sig-param"><span class="n">namet</span></em>, <em class="sig-param"><span class="n">go_file</span></em>, <em class="sig-param"><span class="n">goa_file</span></em>, <em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">ka</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.gotop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the top variable GO enrichment of top principal genes in the binary co-expression network.</p>
+<p>Principal genes are those with most co-expressed genes. They reflect the most variable pathways in the dataset. When the variable pathways are housekeeping related, they may conceal cell-type-specific co-expression patterns from being observed and understood. This function identifies the most variable pathway with gene ontology enrichment study of the top principal genes. Background genes are all genes provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>net</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_gene</em><em>)</em><em>,</em><em>dtype=bool</em><em>)</em>) – Binary co-expression network matrix.</p></li>
+<li><p><strong>namet</strong> (<em>list of str</em>) – Gene names matching the rows and columns of net.</p></li>
+<li><p><strong>go_file</strong> (<em>str</em>) – Path of GO DAG file</p></li>
+<li><p><strong>goa_file</strong> (<em>str</em>) – Path of GO annotation file</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Number of top principal genes to include for GO enrichment. Default is 100, giving good performance in general.</p></li>
+<li><p><strong>ka</strong> (<em>dict</em>) – <strong>IMPORTANT</strong>: Keyword arguments passed to normalisr.gocovt.goe to determine how to perform GO enrichment study. If you see no gene mapped, check your gene name conversion rule in conversion parameter of goe. GO annotation have a specific gene ID system.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>principals</strong> (<em>list of str</em>) – List of principal genes.</p></li>
+<li><p><strong>goe</strong> (<em>pandas.DataFrame</em>) – GO enrichment results.</p></li>
+<li><p><strong>gotop</strong> (<em>str</em>) – Top enriched GO ID.</p></li>
+<li><p><strong>genes</strong> (<em>list of str</em>) – List of genes in the gotop GO ID.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="normalisr.normalisr.lcpm">
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">lcpm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reads</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ntot</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">varscale</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.lcpm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes Bayesian log CPM from raw UMI read counts.</p>
+<p>The technical sampling process is modelled as a Binomial distribution. The logCPM given UMI read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reads</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype='uint'</em><em>)</em>) – UMI read count matrix.</p></li>
+<li><p><strong>seed</strong> (<em>int</em>) – Initial random seed if set.</p></li>
+<li><p><strong>ntot</strong> (<em>int</em>) – Manually sets value of total number of UMIs in binomial distribution. Since the posterior distribution stablizes quickly as ntot increases, a large number, e.g. 1E9 is good for general use. Defaults to None to disable manual value.</p></li>
+<li><p><strong>varscale</strong> (<em>float</em>) – Resamples estimated expression using the posterior Beta distribution. varscale sets the scale of variance than its actual value from the posterior distribution. Defaults to 0, to compute expectation with no variance.</p></li>
+<li><p><strong>normalize</strong> (<em>bool</em>) – Whether to normalize output to logCPM per cell. Default: True.</p></li>
+<li><p><strong>nth</strong> (<em>int</em>) – Number of threads to use. Defaults to 0 to use all cores automatically detected.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>lcpm</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Estimated expression as logCPM from UMI read counts.</p></li>
+<li><p><strong>mean</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Mean/Expectation of lcpm’s every entry’s posterior distribution.</p></li>
+<li><p><strong>var</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Variance of lcpm’s every entry’s posterior distribution.</p></li>
+<li><p><strong>cov</strong> (<em>numpy.ndarray(shape=(3,n_cell))</em>) – Cellular summary covariates computed from UMI read count matrix that may confound lcpm. Contains:</p>
+<ul>
+<li><p>cov[0]: Log total read count per cell</p></li>
+<li><p>cov[1]: Number of 0-read genes per cell</p></li>
+<li><p>cov[2]:       cov[0]**2</p></li>
+</ul>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="normalisr.normalisr.normcov">
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">normcov</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.normcov" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalizes each continuous covariate to 0 mean and unit variance.</p>
+<p>Optionally introduces constant 1 covariate as intercept. Categorical covariates should be in binary/one-hot form, and will be left unchanged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>)</em>) – Current covariate matrix. Use empty matrix with n_cov=0 if no covariate.</p></li>
+<li><p><strong>c</strong> (<em>bool</em>) – Whether to introduce a constant 1 covariate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Processed covariate matrix.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray(shape=(n_cov+1 if c else n_cov,n_cell))</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="normalisr.normalisr.normvar">
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">normvar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">wt</span></em>, <em class="sig-param"><span class="n">dextra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cat</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">keepvar</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.normvar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs mean and variance normalizations.</p>
+<p>Expression levels are normalized at mean and then at variance levels. Effectively each gene x is multiplied by w**wt[x] before removing covariates as dc*(w**wt[x]). Continuous covariates are normalized at variance levels. Effectively covariates are transformed to dc*w. Therefore, variance normalization for expression are scaled differently for each gene.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>)</em>) – Bayesian logCPM matrix.</p></li>
+<li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>)</em>) – Covariate matrix.</p></li>
+<li><p><strong>w</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cell</em><em>,</em><em>)</em><em>)</em>) – Computed variance normalization multiplier.</p></li>
+<li><p><strong>wt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>)</em><em>)</em>) – Computed scaling factor for each gene.</p></li>
+<li><p><strong>dextra</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_extra</em><em>,</em><em>n_cell</em><em>)</em><em>)</em>) – Extra data matrix also to be normalized like continuous covariates.</p></li>
+<li><p><strong>cat</strong> (<em>int</em>) – <p>Whether to normalize categorical/binary covariates (those with only 0 or 1s). Defaults to 1.</p>
+<ul>
+<li><p>0:    No</p></li>
+<li><p>1:    No except constant-1 covariate (intercept)</p></li>
+<li><p>2:    Yes</p></li>
+</ul>
+</p></li>
+<li><p><strong>keepvar</strong> (<em>bool</em>) – Whether to maintain the variance of each gene invariant in mean normalization step. If so, expression variances are scaled back to original after mean normalization and before variance normalization. This function only affects overall variance level and its downstreams (e.g. differential expression log fold change). This function would not affect P-value computation. Default: True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>(dtn,dcn) or (dtn,dcn,dextran) if dextra is not None</em></p></li>
+<li><p><strong>dtn</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Normalized gene expression matrix.</p></li>
+<li><p><strong>dcn</strong> (<em>numpy.ndarray(shape=(n_cov,n_cell))</em>) – Normalized covariate matrix.</p></li>
+<li><p><strong>dextran</strong> (<em>numpy.ndarray(shape=(n_extra,n_cell))</em>) – Normalized extra data matrix.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="normalisr.normalisr.pccovt">
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">pccovt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">namet</span></em>, <em class="sig-param"><span class="n">genes</span></em>, <em class="sig-param"><span class="n">condcov</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.pccovt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Introduces an extra covariate from the top principal component of given genes.</p>
+<p>The extra covariate is the top principal component of normalized expressions of the selected genes. Adding a covariate from housekeeping pathway can reveal cell-type-specific activities in co-expression networks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>)</em>) – Normalized expression matrix.</p></li>
+<li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>)</em>) – Existing normalized covariate matrix.</p></li>
+<li><p><strong>namet</strong> (<em>list of str</em>) – List of gene names for rows in dt.</p></li>
+<li><p><strong>genes</strong> (<em>list of str</em>) – List of gene names to include in finding top PC of their expression as an extra covariate.</p></li>
+<li><p><strong>condcov</strong> (<em>bool</em>) – Whether to condition on existing covariates before computing top PC. Default: True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New normalized covariate matrix.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray(shape=(n_cov+1,n_cell))</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="normalisr.normalisr.qc_outlier">
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">qc_outlier</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dw</span></em>, <em class="sig-param"><span class="n">pcut</span><span class="o">=</span><span class="default_value">1e-10</span></em>, <em class="sig-param"><span class="n">outrate</span><span class="o">=</span><span class="default_value">0.02</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.qc_outlier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quality control by removing cell outliers by variance.</p>
+<p>Fit normal distribution on the inverse sqrt variance to detect outliers. This is performed by iterative estimation of normal distribution with non-outliers and then determination of outliers with the normal distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dw</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cell</em><em>,</em><em>)</em><em>)</em>) – Fitted inverse sqrt cell variance.</p></li>
+<li><p><strong>pcut</strong> (<em>float</em>) – Bonferroni P-value cutoff for asserting outliers in a normal distribution of fitted cell variance. Default: 1E-10.</p></li>
+<li><p><strong>outrate</strong> (<em>float</em>) – Upper bound of proportion of outliers on either side of variance distribution. Used for initial outlier assignment and final validity check. Default: 0.02.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether each cell passed QC</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray(shape=(n_cell,),dtype=bool)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="normalisr.normalisr.qc_reads">
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">qc_reads</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reads</span></em>, <em class="sig-param"><span class="n">n_gene</span></em>, <em class="sig-param"><span class="n">nc_gene</span></em>, <em class="sig-param"><span class="n">ncp_gene</span></em>, <em class="sig-param"><span class="n">n_cell</span></em>, <em class="sig-param"><span class="n">nt_cell</span></em>, <em class="sig-param"><span class="n">ntp_cell</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.qc_reads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quality control by bounding UMI read counts.</p>
+<p>All QC parameters can be set to 0 to disable QC filtering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reads</strong> (<em>numpy.ndarray</em><em>(</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype='uint'</em><em>)</em>) – UMI read count matrix.</p></li>
+<li><p><strong>n_gene</strong> (<em>int</em>) – Lower bound on total read counts for gene QC.</p></li>
+<li><p><strong>nc_gene</strong> (<em>int</em>) – Lower bound on number of expressed cells for gene QC.</p></li>
+<li><p><strong>ncp_gene</strong> (<em>float</em>) – Lower bound on proportion of expressed cells for gene QC.</p></li>
+<li><p><strong>n_cell</strong> (<em>int</em>) – Lower bound on total read counts for cell QC.</p></li>
+<li><p><strong>nt_cell</strong> (<em>int</em>) – Lower bound on number of expressed genes for cell QC.</p></li>
+<li><p><strong>ntp_cell</strong> (<em>float</em>) – Lower bound on proportion of expressed genes for cell QC.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>genes_select</strong> (<em>numpy.ndarray(dtype=’uint’)</em>) – Array of indices of genes passed QC.</p></li>
+<li><p><strong>cells_select</strong> (<em>numpy.ndarray(dtype=’uint’)</em>) – Array of indices of cells passed QC.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="normalisr.normalisr.scaling_factor">
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">scaling_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">varname</span><span class="o">=</span><span class="default_value">'nt0mean'</span></em>, <em class="sig-param"><span class="n">v0</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">v1</span><span class="o">=</span><span class="default_value">'max'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.scaling_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes scaling factor of variance normalization for every gene.</p>
+<p>Lowly expressed genes need full variance normalization because of technical confounding from sequencing depth. Highly expressed genes do not need variance normalization because they are already accurately measured. The scaling factor operates as a exponential factor on the variance normalization scale for each gene. It should be maximum/minimum for genes with lowest/highest expression.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype='uint'</em><em>)</em>) – UMI read count matrix.</p></li>
+<li><p><strong>varname</strong> (<em>str</em>) – <p>Variable used to compute scaling factor for each gene. Can be:</p>
+<ul>
+<li><p>logtpropmean: log(dt.mean(axis=1)/dt.mean(axis=1).sum())</p></li>
+<li><p>logtmeanprop: log((dt/dt.sum(axis=0)).mean(axis=1))</p></li>
+<li><p>nt0mean:              (dt==0).mean(axis=1)</p></li>
+<li><p>lognt0mean:   log((dt==0).mean(axis=1))</p></li>
+<li><p>log1-nt0mean: log(1-(dt==0).mean(axis=1))</p></li>
+</ul>
+<p>Defaults to nt0mean.</p>
+</p></li>
+<li><p><strong>v0</strong><strong>,</strong><strong>v1</strong> (<em>float</em>) – <p>Variable values to set scaling factor to 0 (for v0) and 1 (for v1). Linear assignment is applied for values inbetween. Can be:</p>
+<ul>
+<li><p>max:                  max</p></li>
+<li><p>min:                  min</p></li>
+<li><p>any float:    that float</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Scaling factor of variance normalization for each gene</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray(shape=(n_gene,))</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Normalisr</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quality-control">Quality control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#normalization">Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#differential-expression">Differential expression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#co-expression">Co-expression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-normalisr.normalisr">API list</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="all_api.html">All API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="quickstart.html" title="previous chapter">Normalisr</a></li>
+      <li>Next: <a href="all_api.html" title="next chapter">All API</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Lingfei Wang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="sources/user_api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

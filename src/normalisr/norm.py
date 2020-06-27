@@ -1,14 +1,22 @@
 #!/usr/bin/python3
 
 def normcov(dc,c=True):
-	"""To normalize continuous covariates to 0 mean and unit variance.
-	Introduce constant 1 covariate as intercept.
-	Categorical covariates should be in binary/dummy form.
-	Binary covariates are left unchanged.
-	dc:	numpy.array(shape=[n_cov,n_cell]). Existing covariates. Each row is a covariate.
-		Each column is a cell/sample. No covariate means n_cov=0.
-	c:	Whether to add a constant 1 covariate
-	Return: numpy.array(shape=(n_cov+1 if c else n_cov,n_cell)) Processed covariates."""
+	"""Normalizes each continuous covariate to 0 mean and unit variance.
+
+	Optionally introduces constant 1 covariate as intercept. Categorical covariates should be in binary/one-hot form, and will be left unchanged.
+
+	Parameters
+	----------
+	dc:	numpy.ndarray(shape=(n_cov,n_cell))
+		Current covariate matrix. Use empty matrix with n_cov=0 if no covariate.
+	c:	bool
+		Whether to introduce a constant 1 covariate.
+
+	Returns
+	--------
+	numpy.ndarray(shape=(n_cov+1 if c else n_cov,n_cell))
+		Processed covariate matrix.
+	"""
 	import numpy as np
 	import logging,warnings
 	assert dc is not None
@@ -39,17 +47,26 @@ def normcov(dc,c=True):
 	return dc
 
 def compute_var(dt,dc,stepmax=1,eps=1E-6):
-	"""To fit the variance of each cell with covariates.
-	Use EM-like method to fit a log-linear model of variance using covariates.
-	dt:		numpy.array(shape=[n_gene,n_cell]). Log expression levels. Each row is a gene.
-			Each column is a cell/sample.
-	dc:		numpy.array(shape=[n_cov,n_cell]). Existing covariates. Each row is a covariate.
-			Each column is a cell/sample.
-	stepmax:Maximum number of steps to stop regardless of convergence.
-	eps:	Precision target for early stopping. Constrains the maximum relative difference of
-			fitted variance across cells compared to the last step.
-	Return:	variances**(-0.5), i.e. the multiplier for normalization, as numpy.array(shape=[n_cell]).
-			The optimal step will be returned, defined as the least max relative change across cells."""
+	"""Computes variance normalization scale for each cell.
+
+	Performs a log-linear fit of the variance of each cell with covariates. Optionally use EM-like method to iteratively fit mean and variance. For EM-like method, early-stopping is suggested because of overfitting issues.
+
+	Parameters
+	----------
+	dt:		numpy.ndarray(shape=(n_gene,n_cell)).
+		Bayesian LogCPM expression level matrix.
+	dc:		numpy.ndarray(shape=(n_cov,n_cell)).
+		Covariate matrix.
+	stepmax:int
+		Maximum number of EM-like iterations of mean and variance normalization. Stop of iteration is also possible when relative accuracy target is reached. Defaults to 1, indicating no iterative normalization.
+	eps:	float
+		Relative accuracy target for early stopping. Constrains the maximum relative difference of fitted variance across cells compared to the last step. Defaults to 1E-6.
+
+	Returns
+	-------
+	numpy.ndarray(shape=(n_cell,))
+		Inverse sqrt of fitted variance for each cell, i.e. the multiplier for variance normalization. For iterative normalization, the optimal step will be returned, defined as having the minimal max relative change across cells.
+	"""
 	import numpy as np
 	from sklearn.linear_model import LinearRegression as lr0
 	import logging
@@ -103,27 +120,41 @@ def compute_var(dt,dc,stepmax=1,eps=1E-6):
 	return d1sscale
 
 def normvar(dt,dc,w,wt,dextra=None,cat=1,keepvar=True):
-	"""To linearly normalize the variance of expression using covariates,
-	accounting for different scaling factors for different genes.
-	Also to transform the covariates to reflect the normalization.
-	Each gene x is multiplied by w**wt[x] before removing covariates as dc*(w**wt[x]).
-	Covariates are transformed to dc*w.
-	dt:		numpy.array(shape=[n_gene,n_cell]). Bayesian logCPM.
-	dc:		numpy.array(shape=[n_cov,n_cell]). Existing covariates.
-	w:		numpy.array(shape=[n_cell]). Multiplier to normalize variance.
-	wt:		numpy.array(shape=[n_gene]). Scaling factor for each gene.
-	dextra:	numpy.array(shape=[n_extra,n_cell]). Extra data only to be normalized like continuous covariates.
-	cat:	Whether to normalize categorical covariates (those with only 0 or 1s).
-		0:	No
-		1:	No except constant-1 covariate
-		2:	Yes
-	keepvar:Whether to maintain the variance of each gene invariant in covariate removal step.
-			Only affects overall variance level and its downstreams (e.g. differential expression log fold change).
-			Would not affect P-value computation.
-	Return: [dtn,dcn] or [dtn,dcn,dextran] if dextra is not None
-	dtn:	numpy.array(shape=[n_gene,n_cell]) Transformed gene expressions.
-	dcn:	numpy.array(shape=[n_cov,n_cell]) Transformed covariates.
-	dextran:numpy.array(shape=[n_extra,n_cell]) Transformed extra variables.
+	"""Performs mean and variance normalizations.
+
+	Expression levels are normalized at mean and then at variance levels. Effectively each gene x is multiplied by w**wt[x] before removing covariates as dc*(w**wt[x]). Continuous covariates are normalized at variance levels. Effectively covariates are transformed to dc*w. Therefore, variance normalization for expression are scaled differently for each gene.
+
+	Parameters
+	-----------
+	dt:		numpy.ndarray(shape=(n_gene,n_cell))
+		Bayesian logCPM matrix.
+	dc:		numpy.ndarray(shape=(n_cov,n_cell))
+		Covariate matrix.
+	w:		numpy.ndarray(shape=(n_cell,))
+		Computed variance normalization multiplier.
+	wt:		numpy.ndarray(shape=(n_gene,))
+		Computed scaling factor for each gene.
+	dextra:	numpy.ndarray(shape=(n_extra,n_cell))
+		Extra data matrix also to be normalized like continuous covariates.
+	cat:	int
+		Whether to normalize categorical/binary covariates (those with only 0 or 1s). Defaults to 1.
+
+		* 0:	No
+		* 1:	No except constant-1 covariate (intercept)
+		* 2:	Yes
+
+	keepvar:bool
+		Whether to maintain the variance of each gene invariant in mean normalization step. If so, expression variances are scaled back to original after mean normalization and before variance normalization. This function only affects overall variance level and its downstreams (e.g. differential expression log fold change). This function would not affect P-value computation. Default: True.
+
+	Returns
+	--------
+	(dtn,dcn) or (dtn,dcn,dextran) if dextra is not None
+	dtn:	numpy.ndarray(shape=(n_gene,n_cell))
+		Normalized gene expression matrix.
+	dcn:	numpy.ndarray(shape=(n_cov,n_cell))
+		Normalized covariate matrix.
+	dextran:numpy.ndarray(shape=(n_extra,n_cell))
+		Normalized extra data matrix.
 	"""
 	import numpy as np
 	from .association import inv_rank

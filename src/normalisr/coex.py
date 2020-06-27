@@ -2,23 +2,45 @@
 
 def coex(dt,dc,bs=0,nth=1,**ka):
 	"""Performs co-expression analyses for all gene pairs.
-	Parallel computation with multiple processes on the same machine.
+
+	Performs parallel computation with multiple processes on the same machine.
 
 	Model for co-expression between genes i & j:
-		X_i=gamma*X_j+alpha*C+epsilon
-		epsilon~i.i.d. N(0,sigma**2)
-	Statistic: R^2 (or proportion of variance explained)
+		X_i=gamma*X_j+alpha*C+epsilon,
+
+		epsilon~i.i.d. N(0,sigma**2).
+
+	Test statistic: conditional R**2 (or proportion of variance explained) between X_i and X_j.
+
 	Null hypothesis: gamma=0.
 
-	dt:		numpy.array(shape=(n_gene,n_cell)). Target matrix for a list of Y to be tested, e.g. gene expression.
-	dc:		numpy.array(shape=(n_cov,n_cell)). Covariate matrix C.
-	bs:		Number of genes in each job. Use 0 for default: Data transfer limited to 1GB, capped at bs=500.
-	nth:	Number of processes. 0 for using automatically detected CPU counts.
-	ka:		Keyword arguments passed to .association.association_test_1.
-	Return:	(p-values,dot,var)
-	p-values:	numpy.array(shape=(n_gene,n_gene)).
-	dot:		numpy.array(shape=(n_gene,n_gene)). Inner product of gene expressions after removing covariates.
-	var:		numpy.array(shape=(n_gene)). Full variance of dt after removing covariates"""
+	Parameters
+	----------
+	dt:		numpy.ndarray(shape=(n_gene,n_cell),dtype=float)
+		Normalized expression matrix X.
+	dc:		numpy.ndarray(shape=(n_cov,n_cell),dtype=float)
+		Normalized covariate matrix C.
+	bs:		int
+		Batch size, i.e. number of genes in each computing batch. Use 0 for default: Data transfer limited to 1GB, capped at bs=500.
+	nth:	int
+		Number of parallel processes. Set to 0 for using automatically detected CPU counts.
+	ka:		dict
+		Keyword arguments passed to normalisr.association.association_test_1. See below.
+
+	Returns
+	-------
+	P-values:	numpy.ndarray(shape=(n_gene,n_gene))
+		Co-expression P-value matrix.
+	dot:		numpy.ndarray(shape=(n_gene,n_gene))
+		Inner product of expression between gene pairs, after removing covariates.
+	var:		numpy.ndarray(shape=(n_gene))
+		Variance of gene expression after removing covariates. Pearson R=(((dot/numpy.sqrt(var)).T)/numpy.sqrt(var)).T.
+
+	Keyword arguments
+	-----------------
+	dimreduce:	numpy.ndarray(shape=(n_gene,),dtype=int) or int
+		If dt doesn't have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.
+	"""
 	import numpy as np
 	import logging
 	import itertools

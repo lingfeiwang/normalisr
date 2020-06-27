@@ -1,17 +1,33 @@
 #!/usr/bin/python3
 
 def qc_reads(reads,n_gene,nc_gene,ncp_gene,n_cell,nt_cell,ntp_cell):
-	"""QC by bounding UMIs. All QC parameters can be set to 0 to disable.
-	reads:			Dense reads matrix (n_gene,n_cell)
-	Gene removal:
-		n_gene:		Lower bound on total read counts.
-		nc_gene:	Lower bound on number of expressed cells.
-		ncp_gene:	Lower bound on proportion of expressed cells.
-	Cell removal:
-		n_cell:		Lower bound on total read counts.
-		nt_cell:	Lower bound on number of expressed genes.
-		ntp_cell:	Lower bound on proportion of expressed genes.
-	Return: (genes_select,cells_select). Each as a index array to indicate genes/cells passed QC.
+	"""Quality control by bounding UMI read counts.
+
+	All QC parameters can be set to 0 to disable QC filtering.
+
+	Parameters
+	-----------
+	reads:		numpy.ndarray((n_gene,n_cell),dtype='uint')
+		UMI read count matrix.
+	n_gene:		int
+		Lower bound on total read counts for gene QC.
+	nc_gene:	int
+		Lower bound on number of expressed cells for gene QC.
+	ncp_gene:	float
+		Lower bound on proportion of expressed cells for gene QC.
+	n_cell:		int
+		Lower bound on total read counts for cell QC.
+	nt_cell:	int
+		Lower bound on number of expressed genes for cell QC.
+	ntp_cell:	float
+		Lower bound on proportion of expressed genes for cell QC.
+
+	Returns
+	-------
+	genes_select:	numpy.ndarray(dtype='uint')
+		Array of indices of genes passed QC.
+	cells_select:	numpy.ndarray(dtype='uint')
+		Array of indices of cells passed QC.
 	"""
 	import numpy as np
 	import logging
@@ -64,12 +80,23 @@ def qc_reads(reads,n_gene,nc_gene,ncp_gene,n_cell,nt_cell,ntp_cell):
 	return (st,ss)
 
 def qc_outlier(dw,pcut=1E-10,outrate=0.02):
-	"""QC by removing cell outliers by variance. Fit normal distribution and detect outliers iteratively.
-	dw:		Fitted cell weights (i.e. variance**-0.5) as numpy.array(shape=[n_cell])
-	pcut:	Bonferroni P-value cutoff for outliers in a normally distribution of fitted cell weight.
-	outrate:Upper bound of proportion of outliers on either side of variance distribution.
-			Used for initial outlier assignment and validity check.
-	Return:	Whether each cell passed QC as numpy.array(shape=[n_cell],dtype=bool)
+	"""Quality control by removing cell outliers by variance.
+
+	Fit normal distribution on the inverse sqrt variance to detect outliers. This is performed by iterative estimation of normal distribution with non-outliers and then determination of outliers with the normal distribution.
+
+	Parameters
+	-----------
+	dw:		numpy.ndarray(shape=(n_cell,))
+		Fitted inverse sqrt cell variance.
+	pcut:	float
+		Bonferroni P-value cutoff for asserting outliers in a normal distribution of fitted cell variance. Default: 1E-10.
+	outrate:float
+		Upper bound of proportion of outliers on either side of variance distribution. Used for initial outlier assignment and final validity check. Default: 0.02.
+
+	Returns
+	-------
+	numpy.ndarray(shape=(n_cell,),dtype=bool)
+		Whether each cell passed QC
 	"""
 	import numpy as np
 	from sklearn.linear_model import LinearRegression as lr0

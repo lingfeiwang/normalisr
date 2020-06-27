@@ -1,32 +1,44 @@
 #!/usr/bin/python3
 
 def trigamma(x):
+	"""Tri-gamma function"""
 	from scipy.special import polygamma
 	return polygamma(1,x)
 
 def lcpm(reads,seed=None,nth=0,ntot=None,varscale=0,normalize=True):
-	"""Bayesian model infer or resample log expression proportion from its posterior distribution based on read counts.
-	reads:	Read counts as numpy.array(shape=(n_gene,n_cell),dtype=uint)
-	seed:	Initial random seed if set.
-	ntot:	Manually set of total number of UMIs in binomial distribution.
-			Since the posterior distribution stablizes quickly as ntot increases, a large number, e.g. 1E9 is good for general use.
-	varscale:	Variance is scaled by varscale before resampling data. Set to 0 (default) for expectation values.
-	normalize:	Whether to normalize output to unit sum per cell.
-	nth:	Number of threads to use. Set to 0 to use all cores automatically detected.
+	"""Computes Bayesian log CPM from raw UMI read counts.
 
-	Return:	(dnew,mean,var,cov)
-	dnew:	Generated log expression proportion as numpy.array(shape=(n_gene,n_cell))
-			Satisfies (numpy.exp(dnew).sum(axis=0)==1E6).all() if normalize
-	mean:	Mean/Expectation of dnew's every entry's posterior distribution as numpy.array(shape=(n_gene,n_cell))
-	var:	Variance of dnew's every entry's posterior distribution as numpy.array(shape=(n_gene,n_cell))
-	cov:	Covariates introduced in dnew due to this generative model, as numpy.array(shape=(3,n_cell))
-			cov[0]: Log total read count per cell
-			cov[1]: Number of 0-read genes per cell
-			cov[2]:	cov[0]**2
+	The technical sampling process is modelled as a Binomial distribution. The logCPM given UMI read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.
 
-	Dimensions:
-	n_cell:	Total number of cells
-	n_gene:	Number of genes/transcripts
+	Parameters
+	----------
+	reads:		numpy.ndarray(shape=(n_gene,n_cell),dtype='uint')
+		UMI read count matrix.
+	seed:		int
+		Initial random seed if set.
+	ntot:		int
+		Manually sets value of total number of UMIs in binomial distribution. Since the posterior distribution stablizes quickly as ntot increases, a large number, e.g. 1E9 is good for general use. Defaults to None to disable manual value.
+	varscale:	float
+		Resamples estimated expression using the posterior Beta distribution. varscale sets the scale of variance than its actual value from the posterior distribution. Defaults to 0, to compute expectation with no variance.
+	normalize:	bool
+		Whether to normalize output to logCPM per cell. Default: True.
+	nth:		int
+		Number of threads to use. Defaults to 0 to use all cores automatically detected.
+
+	Returns
+	-------
+	lcpm:	numpy.ndarray(shape=(n_gene,n_cell))
+		Estimated expression as logCPM from UMI read counts.
+	mean:	numpy.ndarray(shape=(n_gene,n_cell))
+		Mean/Expectation of lcpm's every entry's posterior distribution.
+	var:	numpy.ndarray(shape=(n_gene,n_cell))
+		Variance of lcpm's every entry's posterior distribution.
+	cov:	numpy.ndarray(shape=(3,n_cell))
+		Cellular summary covariates computed from UMI read count matrix that may confound lcpm. Contains:
+
+		* cov[0]: Log total read count per cell
+		* cov[1]: Number of 0-read genes per cell
+		* cov[2]:	cov[0]**2
 	"""
 	d=reads
 	import numpy as np
@@ -108,20 +120,35 @@ def lcpm(reads,seed=None,nth=0,ntot=None,varscale=0,normalize=True):
 	return (dtn,dmean,dvar,dcov)
 
 def scaling_factor(dt,varname='nt0mean',v0=0,v1='max'):
-	"""Computes scaling factor for every gene. Must use original (count) data
-	dt:			Read counts as numpy.array(shape=(n_gene,n_cell),dtype=uint)
-	varname:	Variable used to compute scaling factor for each gene.
-		logtpropmean:	log(dt.mean(axis=1)/dt.mean(axis=1).sum())
-		logtmeanprop:	log((dt/dt.sum(axis=0)).mean(axis=1))
-		nt0mean:		(dt==0).mean(axis=1)
-		lognt0mean:		log((dt==0).mean(axis=1))
-		log1-nt0mean:	log(1-(dt==0).mean(axis=1))
-	v0,
-	v1:			Value to set scaling factor to 0 (for v0) and 1 (for v1)
-		max:		max
-		min:		min
-		any float:	that float
-	Return:	numpy.array(shape=[n_gene]) Scaling factor of weight for each gene
+	"""Computes scaling factor of variance normalization for every gene.
+
+	Lowly expressed genes need full variance normalization because of technical confounding from sequencing depth. Highly expressed genes do not need variance normalization because they are already accurately measured. The scaling factor operates as a exponential factor on the variance normalization scale for each gene. It should be maximum/minimum for genes with lowest/highest expression.
+
+	Parameters
+	----------
+	dt:			numpy.ndarray(shape=(n_gene,n_cell),dtype='uint')
+		UMI read count matrix.
+	varname:	str
+		Variable used to compute scaling factor for each gene. Can be:
+
+		* logtpropmean:	log(dt.mean(axis=1)/dt.mean(axis=1).sum())
+		* logtmeanprop:	log((dt/dt.sum(axis=0)).mean(axis=1))
+		* nt0mean:		(dt==0).mean(axis=1)
+		* lognt0mean:	log((dt==0).mean(axis=1))
+		* log1-nt0mean:	log(1-(dt==0).mean(axis=1))
+
+		Defaults to nt0mean.
+	v0,v1:		float
+		Variable values to set scaling factor to 0 (for v0) and 1 (for v1). Linear assignment is applied for values inbetween. Can be:
+
+		* max:			max
+		* min:			min
+		* any float:	that float
+
+	Returns
+	--------
+	numpy.ndarray(shape=(n_gene,))
+		Scaling factor of variance normalization for each gene
 	"""
 	if dt.ndim!=2:
 		raise ValueError('dt must have 2 dimensions.')
