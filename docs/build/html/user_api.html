@@ -434,7 +434,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <dt id="normalisr.normalisr.qc_reads">
 <code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">qc_reads</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reads</span></em>, <em class="sig-param"><span class="n">n_gene</span></em>, <em class="sig-param"><span class="n">nc_gene</span></em>, <em class="sig-param"><span class="n">ncp_gene</span></em>, <em class="sig-param"><span class="n">n_cell</span></em>, <em class="sig-param"><span class="n">nt_cell</span></em>, <em class="sig-param"><span class="n">ntp_cell</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.qc_reads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Quality control by bounding UMI read counts.</p>
-<p>All QC parameters can be set to 0 to disable QC filtering.</p>
+<p>Quality control is perform separately on genes based on their cell statisics and on cells based on their gene statistics, iteratively until dataset remains unchanged. A gene or cell is removed if any of the QC criteria is violated at any time in the iteration. All QC parameters can be set to 0 to disable QC filtering for that criterion.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

@@ -9,7 +9,7 @@ Normalisr is written in Python3 and provides a command-line and a python functio
 
 Installation
 =============
-Normalisr is on PyPI (link TBA) and can be installed straightaway with pip (TB-uploaded): ``pip install normalisr``. You can also install Normalisr from github: ``pip install git+https://github.com/lingfeiwang/normalisr.git``. Make sure you have added Normalisr's install path into PATH environment before using the command-line interface (See FAQ_). Normalisr's installation should take less than a minute.
+Normalisr is on `PyPI <https://pypi.org/project/normalisr>`_ and can be installed with pip: ``pip install normalisr``. You can also install Normalisr from github: ``pip install git+https://github.com/lingfeiwang/normalisr.git``. Make sure you have added Normalisr's install path into PATH environment before using the command-line interface (See FAQ_). Normalisr's installation should take less than a minute.
 
 There are more advanced installation methods but if you want that, most likely you already know how to do it ;). If not, give me a shout (See Contact_).
 
@@ -25,7 +25,7 @@ Normalisr provides a command-line and a python functional interface below. You c
 * Python functional interface
 	Normalisr's python functional interface is more flexible than command-line, but requires knowledge of python programming. Documentation of any function can be obtained with ``?`` in ipython or jupyter notebook, such as:
 
-	.. code-block:: ipython
+	.. code-block::
 
 		import normalisr.normalisr as norm
 		?norm.de
@@ -35,7 +35,7 @@ Normalisr provides a command-line and a python functional interface below. You c
 
 Documentation
 =============
-Documentations are available as `html <https://lingfeiwang.github.io/normalisr/index.html>`_ and `pdf <https://github.com/lingfeiwang/normalisr/blob/master/docs/build/latex/normalisr.pdf>`_.
+Documentations are available as `html <https://lingfeiwang.github.io/normalisr/index.html>`_ and `pdf <https://github.com/lingfeiwang/normalisr/raw/master/docs/build/latex/normalisr.pdf>`_.
 
 Examples and pipelines
 ==========================
