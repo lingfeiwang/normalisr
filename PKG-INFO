@@ -9,11 +9,18 @@ License: BSD-3-Clause
 Description: =========
         Normalisr
         =========
+        .. image:: https://img.shields.io/pypi/v/normalisr?color=informational
+           :target: https://pypi.python.org/pypi/normalisr
+        
+        .. image:: https://zenodo.org/badge/242889849.svg
+           :target: https://zenodo.org/badge/latestdoi/242889849
+        
+        
         Normalisr is a parameter-free normalization-association two-step inferential framework for scRNA-seq that solves case-control differential expression, co-expression, and pooled CRISPRi scRNA-seq screen under one umbrella of linear association testing. Normalisr addresses sparsity and technical confounding challenges of scRNA-seq with posterior mRNA abundances, nonlinear cellular summary covariates, and mean and variance normalization. All these enable linear association testing to achieve optimal sensitivity, specificity, and speed in all above scenarios.
         
         Normalisr follows the conventional framework of normalization/imputation of scRNA-seq, and aims to recover the true, biological, but hidden expression levels which any analyses may then operate upon. Then, linear association testing provides a unified inferential framework with numerous advantages: (i) exact P-value estimation without permutation, (ii) native removal of covariates as fixed effects, (iii) non-parametric robustness, (iv) unbeatable time and memory complexities, and (v) extension potentials such as variations in genetic relatedness.
         
-        Normalisr is written in Python3 and provides a command-line and a python functional interface. You can read more about Normalisr from our preprint (See Citations_).
+        Normalisr is written in Python3 and provides a command-line and a python functional interface. You can read more about Normalisr from our preprint (See References_).
         
         Installation
         =============
@@ -58,11 +65,13 @@ Description: =========
         * Regarding method and manuscript, please reach me by email (Lingfei.Wang.CN@gmail.com).
         * Regarding Normalisr package, please raise an issue on `github <https://github.com/lingfeiwang/normalisr/issues/new>`_ or reach me by email (Lingfei.Wang.github@outlook.com).
         
-        Citations
+        References
         ==========================
-        Please cite our preprint if you use Normalisr:
+        Please find the currently available materials below:
         
-        * TBA
+        * `Abstract <https://github.com/lingfeiwang/normalisr/raw/master/docs/preprint/ICML2020-WCB.pdf>`_ submitted to ICML 2020 Workshop on Computational Biology
+        
+        Contact_ me if you would like to request more details.
         
         FAQ
         ==========================

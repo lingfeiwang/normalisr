@@ -4,6 +4,7 @@ include docs/Makefile
 recursive-include docs/source *
 recursive-include docs/build/html *
 include docs/build/latex/normalisr.pdf
+include docs/preprint/ICML2020-WCB.pdf
 
 exclude docs/build/html/.buildinfo
 recursive-exclude docs/build/html/sources *
