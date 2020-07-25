@@ -1,9 +1,16 @@
 #!/usr/bin/python3
 
 def pc1(d):
-	"""Helper function to compute top principal component.
-	d:		[n,ns]
-	Return:	PC 1 as [ns]
+	"""Computes top principal component.
+	
+	Parameters
+	------------
+	d:		numpy.ndarray(shape=(n1,n2))
+		
+	Returns
+	----------
+	numpy.ndarray(shape=(n2,))
+	
 	"""
 	import numpy as np
 	from sklearn.decomposition import TruncatedSVD
@@ -16,28 +23,46 @@ def pc1(d):
 	assert t1.shape==(d.shape[1],)
 	return t1
 
-def goe(genelist,go_file,goa_file,bg=None,nmin=5,conversion=None,evidence_set= {'EXP','IDA','IPI','IMP','IGI','HTP','HDA','HMP','HGI','IBA','IBD','IKR','IRD','ISS','ISO','ISA','ISM'},**ka):
-	"""Use python package goatools (0.7.11 tested) to find GO enrichment.
-	WARNING: This method is inaccurate for multimaps in gene name conversion.
-	However, it has a negligible effect in top GO component removal in single-cell co-expression.
-	genelist:	The list of genes to search enrichment
-	go_file,
-	goa_file:	Files for GO definitions and GO associations.
-	bg:			Background gene list
-	nmin:		Minimum number of principal genes required in GO
-	conversion:	(name_from,name_to,species) if gene list needs conversion to gene ID systems in the GO annotation.
-				Names of gene naming systems can be found at https://docs.mygene.info/en/latest/doc/data.html.
-		name_from:	Gene naming system of genelist. For gene names, use 'symbol,alias'
-		name_to:	Gene naming system of goa_file. Examples:
-					For human (http://geneontology.org/gene-associations/goa_human.gaf.gz), use 'uniprot.Swiss-Prot'.
-					For mouse (http://current.geneontology.org/annotations/mgi.gaf.gz), use 'MGI'.
-		species:	Species for gene name conversion. Examples: human, mouse.
-	evidence_set:	Set of GO evidences to include. Defaults for non-expression based results.
-	ka:			arguments passed to enrichment.
-	Return:		(goe,gotop,genes)
-	goe:		Pandas DataFrame of GO enrichment
-	gotop:		Top enriched GO ID
-	genes:		Genes in the gotop from the bg list. genes=None if bg is None.
+def goe(genelist,go_file,goa_file,bg=None,nmin=5,conversion=None,evidence_set= {'EXP','IDA','IPI','IMP','IGI','HTP','HDA','HMP','HGI','IBA','IBD','IKR','IRD','ISS','ISO','ISA','ISM'}):
+	"""Finds GO enrichment with goatools (0.7.11 tested).
+	
+	WARNING: This method is inexact for multi-maps in gene name conversion. However, it has a negligible effect in top GO component removal in single-cell co-expression.
+
+	Parameters
+	------------
+	genelist:	list of str
+		Genes to search for enrichment.
+	go_file:	str
+		File path for GO DAG (downloadable at http://geneontology.org/docs/download-ontology/)).
+	goa_file:	str
+		File path for GO associations. See parameter **conversion**.
+	bg:			list of str
+		Background genes.
+	nmin:		int
+		Minimum number of principal genes required in GO.
+	conversion:	tuple
+		Conversion of `gene ID system <https://docs.mygene.info/en/latest/doc/data.html>`_ from gene list to the GO annotation.
+
+		* name_from:	Gene naming system of genelist. For gene names, use 'symbol,alias'.
+		* name_to:		Gene naming system of goa_file. Examples:
+			
+			* Human: use 'uniprot.Swiss-Prot' (for GO annotations downloded from http://geneontology.org/gene-associations/goa_human.gaf.gz).
+			* Mouse: use 'MGI' (for GO annotations downloded from http://current.geneontology.org/annotations/mgi.gaf.gz).
+
+		* species:		Species for gene name conversion. Examples: 'human', 'mouse'.
+
+	evidence_set:	set of str
+		`GO evidences <http://geneontology.org/docs/guide-go-evidence-codes/>`_ to include. Defaults for non-expression based results.
+	
+	Returns
+	----------
+	goe:		pandas.DataFrame
+		GO enrichment.
+	gotop:		str
+		Top enriched GO ID
+	genes:		list of str or None
+		Intersection list of genes in gotop and also bg. None if bg is None.
+		
 	"""
 	from tempfile import NamedTemporaryFile
 	from os import linesep
@@ -162,13 +187,13 @@ def gotop(net,namet,go_file,goa_file,n=100,**ka):
 	namet:		list of str
 		Gene names matching the rows and columns of net.
 	go_file:	str
-		Path of GO DAG file
+		File path for GO DAG (downloadable at http://geneontology.org/docs/download-ontology/)).
 	goa_file:	str
-		Path of GO annotation file
+		File path of GO annotation. See parameter **conversion** in normalisr.gocovt.goe.
 	n:			int
 		Number of top principal genes to include for GO enrichment. Default is 100, giving good performance in general.
 	ka:			dict
-		**IMPORTANT**: Keyword arguments passed to normalisr.gocovt.goe to determine how to perform GO enrichment study. If you see no gene mapped, check your gene name conversion rule in conversion parameter of goe. GO annotation have a specific gene ID system.
+		**IMPORTANT**: Keyword arguments passed to normalisr.gocovt.goe to determine how to perform GO enrichment study. If you see no gene mapped, check your gene name conversion rule in **conversion** parameter of normalisr.gocovt.goe. GO annotation have a specific gene ID system.
 
 	Returns
 	-------
@@ -180,11 +205,12 @@ def gotop(net,namet,go_file,goa_file,n=100,**ka):
 		Top enriched GO ID.
 	genes:		list of str
 		List of genes in the gotop GO ID.
+		
 	"""
 	import numpy as np
 	nt=len(namet)
 	if net.shape!=(nt,nt) or nt<=1:
-		raise ValueError('Wrong shape of net or namet.')
+		raise ValueError('Wrong shape for net or namet.')
 	if n<=1 or n>=nt:
 		raise ValueError('Number of principal genes must be from 1 to the number of all genes (exclusive).')
 
@@ -208,21 +234,22 @@ def pccovt(dt,dc,namet,genes,condcov=True):
 
 	Parameters
 	----------
-	dt:		numpy.ndarray(shape=(n_gene,n_cell))
+	dt:			numpy.ndarray(shape=(n_gene,n_cell))
 		Normalized expression matrix.
-	dc:		numpy.ndarray(shape=(n_cov,n_cell))
+	dc:			numpy.ndarray(shape=(n_cov,n_cell))
 	 	Existing normalized covariate matrix.
-	namet:	list of str
+	namet:		list of str
 		List of gene names for rows in dt.
-	genes:	list of str
+	genes:		list of str
 		List of gene names to include in finding top PC of their expression as an extra covariate.
-	condcov:bool
+	condcov:	bool
 		Whether to condition on existing covariates before computing top PC. Default: True.
 
 	Returns
 	-------
 	numpy.ndarray(shape=(n_cov+1,n_cell))
 		New normalized covariate matrix.
+		
 	"""
 	import numpy as np
 	nt,ns=dt.shape

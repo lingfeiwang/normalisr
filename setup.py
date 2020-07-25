@@ -28,7 +28,7 @@ def pkg_setup():
 		# download_url=url,
 		scripts=['bin/normalisr'],
 		# include_package_data=True,
-		install_requires=['numpy','scipy','argparse','pandas','sklearn','mygene','goatools'],
+		install_requires=['numpy','scipy','argparse','pandas','sklearn','mygene','goatools>=0.7.11'],
 		classifiers=['Development Status :: 4 - Beta',
 			'License :: OSI Approved :: BSD License',
 			'Environment :: Console',

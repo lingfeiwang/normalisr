@@ -1,40 +1,51 @@
 #!/usr/bin/python3
 
 def trigamma(x):
-	"""Tri-gamma function"""
+	"""`Tri-gamma function <https://en.wikipedia.org/wiki/Trigamma_function>`_
+	
+	Parameters
+	------------
+	x:	float or numpy.ndarray
+		Input value(s)
+	
+	Returns
+	-----------
+	float or numpy.ndarray
+	
+	"""
 	from scipy.special import polygamma
 	return polygamma(1,x)
 
-def lcpm(reads,seed=None,nth=0,ntot=None,varscale=0,normalize=True):
-	"""Computes Bayesian log CPM from raw UMI read counts.
+def lcpm(reads,normalize=True,nth=0,ntot=None,varscale=0,seed=None):
+	"""Computes Bayesian log CPM from raw read counts.
 
-	The technical sampling process is modelled as a Binomial distribution. The logCPM given UMI read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.
+	The technical sampling process is modelled as a Binomial distribution. The logCPM given read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.
 
 	Parameters
 	----------
 	reads:		numpy.ndarray(shape=(n_gene,n_cell),dtype='uint')
-		UMI read count matrix.
-	seed:		int
-		Initial random seed if set.
-	ntot:		int
-		Manually sets value of total number of UMIs in binomial distribution. Since the posterior distribution stablizes quickly as ntot increases, a large number, e.g. 1E9 is good for general use. Defaults to None to disable manual value.
-	varscale:	float
-		Resamples estimated expression using the posterior Beta distribution. varscale sets the scale of variance than its actual value from the posterior distribution. Defaults to 0, to compute expectation with no variance.
+		Read count matrix.
 	normalize:	bool
 		Whether to normalize output to logCPM per cell. Default: True.
 	nth:		int
 		Number of threads to use. Defaults to 0 to use all cores automatically detected.
+	ntot:		int
+		Manually sets value of total number of reads in binomial distribution. Since the posterior distribution stablizes quickly as ntot increases, a large number, e.g. 1E9 is good for general use. Defaults to None to disable manual value.
+	varscale:	float
+		Resamples estimated expression using the posterior Beta distribution. varscale sets the scale of variance than its actual value from the posterior distribution. Defaults to 0, to compute expectation with no variance.
+	seed:		int
+		Initial random seed if set.
 
 	Returns
 	-------
 	lcpm:	numpy.ndarray(shape=(n_gene,n_cell))
-		Estimated expression as logCPM from UMI read counts.
+		Estimated expression as logCPM from read counts.
 	mean:	numpy.ndarray(shape=(n_gene,n_cell))
 		Mean/Expectation of lcpm's every entry's posterior distribution.
 	var:	numpy.ndarray(shape=(n_gene,n_cell))
 		Variance of lcpm's every entry's posterior distribution.
 	cov:	numpy.ndarray(shape=(3,n_cell))
-		Cellular summary covariates computed from UMI read count matrix that may confound lcpm. Contains:
+		Cellular summary covariates computed from read count matrix that may confound lcpm. Contains:
 
 		* cov[0]: Log total read count per cell
 		* cov[1]: Number of 0-read genes per cell
@@ -127,7 +138,7 @@ def scaling_factor(dt,varname='nt0mean',v0=0,v1='max'):
 	Parameters
 	----------
 	dt:			numpy.ndarray(shape=(n_gene,n_cell),dtype='uint')
-		UMI read count matrix.
+		Read count matrix.
 	varname:	str
 		Variable used to compute scaling factor for each gene. Can be:
 

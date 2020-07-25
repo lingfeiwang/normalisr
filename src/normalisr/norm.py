@@ -49,7 +49,7 @@ def normcov(dc,c=True):
 def compute_var(dt,dc,stepmax=1,eps=1E-6):
 	"""Computes variance normalization scale for each cell.
 
-	Performs a log-linear fit of the variance of each cell with covariates. Optionally use EM-like method to iteratively fit mean and variance. For EM-like method, early-stopping is suggested because of overfitting issues.
+	Performs a log-linear fit of the variance of each cell with covariates. Optionally use Expectation-Maximization(EM)-like method to iteratively fit mean and variance. For EM-like method, early-stopping is suggested because of overfitting issues.
 
 	Parameters
 	----------

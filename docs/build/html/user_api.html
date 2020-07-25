@@ -44,7 +44,7 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#normalisr.normalisr.qc_reads" title="normalisr.normalisr.qc_reads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qc_reads</span></code></a></p></td>
-<td><p>Quality control by bounding UMI read counts.</p></td>
+<td><p>Quality control by bounding read counts.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#normalisr.normalisr.qc_outlier" title="normalisr.normalisr.qc_outlier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qc_outlier</span></code></a></p></td>
 <td><p>Quality control by removing cell outliers by variance.</p></td>
@@ -61,7 +61,7 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#normalisr.normalisr.lcpm" title="normalisr.normalisr.lcpm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcpm</span></code></a></p></td>
-<td><p>Computes Bayesian log CPM from raw UMI read counts.</p></td>
+<td><p>Computes Bayesian log CPM from raw read counts.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#normalisr.normalisr.normcov" title="normalisr.normalisr.normcov"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normcov</span></code></a></p></td>
 <td><p>Normalizes each continuous covariate to 0 mean and unit variance.</p></td>
@@ -276,10 +276,10 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>net</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_gene</em><em>)</em><em>,</em><em>dtype=bool</em><em>)</em>) – Binary co-expression network matrix.</p></li>
 <li><p><strong>namet</strong> (<em>list of str</em>) – Gene names matching the rows and columns of net.</p></li>
-<li><p><strong>go_file</strong> (<em>str</em>) – Path of GO DAG file</p></li>
-<li><p><strong>goa_file</strong> (<em>str</em>) – Path of GO annotation file</p></li>
+<li><p><strong>go_file</strong> (<em>str</em>) – File path for GO DAG (downloadable at <a class="reference external" href="http://geneontology.org/docs/download-ontology/">http://geneontology.org/docs/download-ontology/</a>)).</p></li>
+<li><p><strong>goa_file</strong> (<em>str</em>) – File path of GO annotation. See parameter <strong>conversion</strong> in normalisr.gocovt.goe.</p></li>
 <li><p><strong>n</strong> (<em>int</em>) – Number of top principal genes to include for GO enrichment. Default is 100, giving good performance in general.</p></li>
-<li><p><strong>ka</strong> (<em>dict</em>) – <strong>IMPORTANT</strong>: Keyword arguments passed to normalisr.gocovt.goe to determine how to perform GO enrichment study. If you see no gene mapped, check your gene name conversion rule in conversion parameter of goe. GO annotation have a specific gene ID system.</p></li>
+<li><p><strong>ka</strong> (<em>dict</em>) – <strong>IMPORTANT</strong>: Keyword arguments passed to normalisr.gocovt.goe to determine how to perform GO enrichment study. If you see no gene mapped, check your gene name conversion rule in <strong>conversion</strong> parameter of normalisr.gocovt.goe. GO annotation have a specific gene ID system.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -296,26 +296,26 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 
 <dl class="py function">
 <dt id="normalisr.normalisr.lcpm">
-<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">lcpm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reads</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ntot</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">varscale</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.lcpm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes Bayesian log CPM from raw UMI read counts.</p>
-<p>The technical sampling process is modelled as a Binomial distribution. The logCPM given UMI read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.</p>
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">lcpm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reads</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ntot</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">varscale</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.lcpm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes Bayesian log CPM from raw read counts.</p>
+<p>The technical sampling process is modelled as a Binomial distribution. The logCPM given read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reads</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype='uint'</em><em>)</em>) – UMI read count matrix.</p></li>
-<li><p><strong>seed</strong> (<em>int</em>) – Initial random seed if set.</p></li>
-<li><p><strong>ntot</strong> (<em>int</em>) – Manually sets value of total number of UMIs in binomial distribution. Since the posterior distribution stablizes quickly as ntot increases, a large number, e.g. 1E9 is good for general use. Defaults to None to disable manual value.</p></li>
-<li><p><strong>varscale</strong> (<em>float</em>) – Resamples estimated expression using the posterior Beta distribution. varscale sets the scale of variance than its actual value from the posterior distribution. Defaults to 0, to compute expectation with no variance.</p></li>
+<li><p><strong>reads</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype='uint'</em><em>)</em>) – Read count matrix.</p></li>
 <li><p><strong>normalize</strong> (<em>bool</em>) – Whether to normalize output to logCPM per cell. Default: True.</p></li>
 <li><p><strong>nth</strong> (<em>int</em>) – Number of threads to use. Defaults to 0 to use all cores automatically detected.</p></li>
+<li><p><strong>ntot</strong> (<em>int</em>) – Manually sets value of total number of reads in binomial distribution. Since the posterior distribution stablizes quickly as ntot increases, a large number, e.g. 1E9 is good for general use. Defaults to None to disable manual value.</p></li>
+<li><p><strong>varscale</strong> (<em>float</em>) – Resamples estimated expression using the posterior Beta distribution. varscale sets the scale of variance than its actual value from the posterior distribution. Defaults to 0, to compute expectation with no variance.</p></li>
+<li><p><strong>seed</strong> (<em>int</em>) – Initial random seed if set.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>lcpm</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Estimated expression as logCPM from UMI read counts.</p></li>
+<li><p><strong>lcpm</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Estimated expression as logCPM from read counts.</p></li>
 <li><p><strong>mean</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Mean/Expectation of lcpm’s every entry’s posterior distribution.</p></li>
 <li><p><strong>var</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Variance of lcpm’s every entry’s posterior distribution.</p></li>
-<li><p><strong>cov</strong> (<em>numpy.ndarray(shape=(3,n_cell))</em>) – Cellular summary covariates computed from UMI read count matrix that may confound lcpm. Contains:</p>
+<li><p><strong>cov</strong> (<em>numpy.ndarray(shape=(3,n_cell))</em>) – Cellular summary covariates computed from read count matrix that may confound lcpm. Contains:</p>
 <ul>
 <li><p>cov[0]: Log total read count per cell</p></li>
 <li><p>cov[1]: Number of 0-read genes per cell</p></li>
@@ -433,12 +433,12 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <dl class="py function">
 <dt id="normalisr.normalisr.qc_reads">
 <code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">qc_reads</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reads</span></em>, <em class="sig-param"><span class="n">n_gene</span></em>, <em class="sig-param"><span class="n">nc_gene</span></em>, <em class="sig-param"><span class="n">ncp_gene</span></em>, <em class="sig-param"><span class="n">n_cell</span></em>, <em class="sig-param"><span class="n">nt_cell</span></em>, <em class="sig-param"><span class="n">ntp_cell</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.qc_reads" title="Permalink to this definition">¶</a></dt>
-<dd><p>Quality control by bounding UMI read counts.</p>
+<dd><p>Quality control by bounding read counts.</p>
 <p>Quality control is perform separately on genes based on their cell statisics and on cells based on their gene statistics, iteratively until dataset remains unchanged. A gene or cell is removed if any of the QC criteria is violated at any time in the iteration. All QC parameters can be set to 0 to disable QC filtering for that criterion.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reads</strong> (<em>numpy.ndarray</em><em>(</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype='uint'</em><em>)</em>) – UMI read count matrix.</p></li>
+<li><p><strong>reads</strong> (<em>numpy.ndarray</em><em>(</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype='uint'</em><em>)</em>) – Read count matrix.</p></li>
 <li><p><strong>n_gene</strong> (<em>int</em>) – Lower bound on total read counts for gene QC.</p></li>
 <li><p><strong>nc_gene</strong> (<em>int</em>) – Lower bound on number of expressed cells for gene QC.</p></li>
 <li><p><strong>ncp_gene</strong> (<em>float</em>) – Lower bound on proportion of expressed cells for gene QC.</p></li>
@@ -465,7 +465,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype='uint'</em><em>)</em>) – UMI read count matrix.</p></li>
+<li><p><strong>dt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype='uint'</em><em>)</em>) – Read count matrix.</p></li>
 <li><p><strong>varname</strong> (<em>str</em>) – <p>Variable used to compute scaling factor for each gene. Can be:</p>
 <ul>
 <li><p>logtpropmean: log(dt.mean(axis=1)/dt.mean(axis=1).sum())</p></li>
@@ -563,7 +563,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
       &copy;2020, Lingfei Wang.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

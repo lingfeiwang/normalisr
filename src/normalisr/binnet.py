@@ -3,10 +3,20 @@
 def nodiag(d,split=False):
 	"""Removes diagonals from 2D matrix.
 
-	d:	numpy.array(shape=[n1,n2]) Input matrix
-	split:	Whether to output list of 1D arrays for each row.
-	Return:	If split:	[numpy.array(shape=[n2 or n2-1])] List of 1D arrays for each row.
-			Else:		numpy.array(shape=[n1*n2-min(n1,n2)]) Reduced 1D array"""
+	Parameters
+	-----------
+	d:		numpy.ndarray(shape=[n1,n2])
+		Input matrix
+	split:	bool
+		Whether to output list of 1D arrays for each row instead of a single concatenated 1D array.
+		
+	Returns
+	---------
+	If split:	List of numpy.ndarray(shape=[n2 or n2-1]) for each row.
+	Else:		numpy.ndarray(shape=(n1*n2-min(n1,n2),))
+		Reduced 1D array
+	
+	"""
 	import numpy as np
 	assert d.ndim==2
 	ans=[]
@@ -23,10 +33,21 @@ def nodiag(d,split=False):
 def rediag(d,fill=0,shape=None):
 	"""Convert a 'nodiag'ed vector back to matrix of original shape.
 
-	d: numpy.array(shape=[n]) of output array from nodiag(.,split=False)
-	fill: Values to fill in the diagonal entries
-	shape: Specify the shape of original matrix. If omitted, assume original is a square matrix.
-	Return: numpy.array(shape=shape) of original matrix shape."""
+	Parameters
+	------------
+	d:		numpy.ndarray(shape=(n,))
+		Output array from nodiag(split=False)
+	fill:	any
+		Values to fill in the diagonal entries
+	shape:	tuple or None
+		Shape of original matrix. If omitted (None), assume original is a square matrix.
+
+	Returns
+	--------
+	numpy.ndarray(shape=shape)
+		Recovered original matrix.
+		
+	"""
 	import numpy as np
 	if shape is None:
 		t1=int(np.sqrt(d.size))+1
@@ -51,12 +72,24 @@ def rediag(d,fill=0,shape=None):
 	return m
 
 def bh(pv,weight=None):
-	"""Convert P-values to Q-values using Benjamini–Hochberg procedure
+	"""Convert P-values to Q-values using Benjamini–Hochberg procedure.
 
-	pv:		1D numpy.array of P-values
-	weight:	Weight of each P-value. Defaults to equal.
-	Return:	1D numpy.array of Q-values
-	Ref:	Controlling the false discovery rate: a practical and powerful approach to multiple testing, 1995
+	Parameters
+	-----------
+	pv:		numpy.ndarray(shape=(n,))
+		P-values.
+	weight:	numpy.ndarray(shape=(n,)) or None
+		Weight of each P-value. Defaults (None) to equal.
+	
+	Returns
+	-------
+	numpy.ndarray(shape=(n,))
+		Q-values.
+
+	References
+	-----------
+	Controlling the false discovery rate: a practical and powerful approach to multiple testing, Benjamini and Hochberg. 1995
+	
 	"""
 	import numpy as np
 	import logging

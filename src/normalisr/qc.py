@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 
 def qc_reads(reads,n_gene,nc_gene,ncp_gene,n_cell,nt_cell,ntp_cell):
-	"""Quality control by bounding UMI read counts.
+	"""Quality control by bounding read counts.
 
 	Quality control is perform separately on genes based on their cell statisics and on cells based on their gene statistics, iteratively until dataset remains unchanged. A gene or cell is removed if any of the QC criteria is violated at any time in the iteration. All QC parameters can be set to 0 to disable QC filtering for that criterion.
 
 	Parameters
 	-----------
 	reads:		numpy.ndarray((n_gene,n_cell),dtype='uint')
-		UMI read count matrix.
+		Read count matrix.
 	n_gene:		int
 		Lower bound on total read counts for gene QC.
 	nc_gene:	int

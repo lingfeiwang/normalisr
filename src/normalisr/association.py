@@ -3,38 +3,38 @@
 def inv_rank(m,tol=1E-8,method='auto',logger=None,mpc=0,qr=0,**ka):
 	"""Computes matrix (pseudo-)inverse and rank with SVD.
 
-	Broadcasts to the last 2 dimensions of the matrix.
+	Eigenvalues smaller than tol*largest eigenvalue are set to 0. Rank of inverted matrix is also returned. Provides to limit the number of eigenvalues to speed up computation. Broadcasts to the last 2 dimensions of the matrix.
 
 	Parameters
-	----------
-	m : np.array([...,n,n])
-		Matrix to be inverted
-	tol : float
+	------------
+	m:		numpy.ndarray(shape=(...,n,n),dtype=float)
+		2-D or higher matrix to be inverted
+	tol:	float
 		Eigenvalues < tol*maximum eigenvalue are treated as zero.
-	method : str
+	method:	str
 		Method to compute eigenvalues:
 		* auto:	Uses scipy for n<mpc or mpc==0 and sklearn otherwise
 		* scipy: Uses scipy.linalg.svd
-		* scipys: NOT IMPLEMENTED.Uses scipy.sparse.linalg.svds
+		* scipys: NOT IMPLEMENTED. Uses scipy.sparse.linalg.svds
 		* sklearn: Uses sklearn.decomposition.TruncatedSVD
-	logger : object
+	logger:	object
 		Logger to output warning. Defaults (None) to logging module
-	mpc : int
-		Maximum rank or number of principal components to consider.
+	mpc:	int
+		Maximum rank or number of eigenvalues/eigenvectors to consider.
 		Defaults to 0 to disable limit.
-		For very large input matrix, use a small value (e.g. 100) to save time at the cost of accuracy.
-	qr : int
+		For very large input matrix, use a small value (e.g. 500) to save time at the cost of accuracy.
+	qr:		int
 		Whether to use QR decomposition for matrix inverse.
-		Only effective when method=sklearn, or =auto and defaults to sklearn.
+		Only effective when method=sklearn, or =auto that defaults to sklearn.
 		* 0:	No
 		* 1:	Yes with default settings
 		* 2+:	Yes with n_iter=qr for sklearn.utils.extmath.randomized_svd
-	ka:	Keyword args passed to method
+	ka:		Keyword args passed to method
 
 	Returns
 	-------
-	mi:	np.array([...,n,n]) as inverse matrices
-	r:	np.array([...]) or int as ranks
+	mi:		numpy.ndarray(shape=(...,n,n),dtype=float) as inverse matrices
+	r:		numpy.ndarray(shape=(...),dtype=int) or int as ranks
 
 	"""
 	import numpy as np
@@ -122,52 +122,55 @@ def inv_rank(m,tol=1E-8,method='auto',logger=None,mpc=0,qr=0,**ka):
 		pass
 	return ans,n2
 
-def gexpand_add(dg):
-	"""Expand genotype using additive model.
-
-	dg:		numpy.array([ng,nd],dtype='u1') as input genotype matrix.
-	dge:	numpy.array([ng,1,nd],dtype='u1') as output expanded genotype matrix."""
-	dge=dg.reshape(dg.shape[0],1,dg.shape[1]).astype('u1')
-	return dge
-
-def gexpand_cat(dg):
-	"""Expand genotype using categorical model.
-
-	dg:		numpy.array([ng,nd],dtype='u1') as input genotype matrix.
-	dge:	numpy.array([ng,n-1,nd],dtype='u1') as output expanded genotype matrix.
-	n:		Number of unique values in dg."""
-	import numpy as np
-	t1=np.unique(dg.flatten())[1:]
-	assert len(t1)>0
-	dge=np.array([dg==x for x in t1]).astype('u1')
-	dge=dge.transpose(1,0,2)
-	return dge
-
 def association_test_1(vx,vy,dx,dy,dc,dci,dcr,dimreduce=0):
-	"""Fast association testing in single-cell non-cohort settings with covariates.
+	"""Fast linear association testing in single-cell non-cohort settings with covariates.
 
-	Single threaded version to allow for parallel computing from outside.
-	Mainly used for naive differential expression and co-expression.
-	Computes the p-value of null (gamma=0) in model Y=X*gamma+C*alpha+epsilon,
-	where epsilon ~ i.i.d. N(0,sigma^2). X and Y are vectors in each test. C is a matrix.
-	Uses analytical method to compute p-values from R^2.
-	vx,vy:	Starting indices of dx and dy. Only used for info passing.
-	dx:		numpy.array(shape=(nx,ns)). Predictor matrix for a list of X to be tested, e.g. gene expression or grouping.
-	dy:		numpy.array(shape=(ny,ns)). Target matrix for a list of Y to be tested, e.g. gene expression.
-	dc:		numpy.array(shape=(nc,ns)). Covariate/confounder matrix for C.
-	dci:	numpy.array(shape=(nc,nc)). Low-rank compatible inverse matrix of dc*dc.T.
-	dcr:	Rank of dc*dc.T.
-	dimreduce:	np.array(shape=(ny,),dtype='uint') or uint. If Y doesn't have full rank in the first place,
-				this parameter allows to specify the loss to allow for accurate p-value computation.
+	Single threaded version to allow for parallel computing wrapper. Mainly used for naive differential expression and co-expression. Computes exact P-value and effect size (gamma) with the model for linear association testing between each vector x and vector y:
+		y=gamma*x+alpha*C+epsilon,
 
-	Return:	[vx,vy,pv,gamma,alpha,var_x,var_y]
-	vx,
-	vy:		For info passing.
-	pv:		numpy.array(shape=(nx,ny)). P-values of association testing (gamma==0).
-	gamma:	numpy.array(shape=(nx,ny)). MLE of gamma in model.
-	alpha:	numpy.array(shape=(nx,ny,nc)). MLE of alpha in model.
-	var_x,
-	var_y:	numpy.array(shape=(nx or ny)). variance of dx/dy unexplained by covariates."""
+		epsilon~i.i.d. N(0,sigma**2).
+
+	Test statistic: conditional R**2 (or proportion of variance explained) between x and y.
+
+	Null hypothesis: gamma=0.
+
+	Parameters
+	----------
+	vx:		any
+		Starting indices of dx. Only used for information passing.
+	vy:		any
+		Starting indices of dy. Only used for information passing.
+	dx:		numpy.ndarray(shape=(n_x,n_cell)).
+		Predictor matrix for a list of vector x to be tested, e.g. gene expression or grouping.
+	dy:		numpy.ndarray(shape=(n_y,n_cell)).
+		Target matrix for a list of vector y to be tested, e.g. gene expression.
+	dc:		numpy.ndarray(shape=(n_cov,n_cell)).
+		Covariate matrix as C.
+	dci:	numpy.ndarray(shape=(n_cov,n_cov)).
+		Low-rank inverse matrix of dc*dc.T.
+	dcr:	int
+		Rank of dci.
+	dimreduce:	numpy.ndarray(shape=(ny,),dtype='uint') or int.
+		If each vector y doesn't have full rank in the first place, this parameter is the loss of degree of freedom to allow for accurate P-value computation.
+
+	Returns
+	----------
+	vx:		any
+		vx from input for information passing.
+	vy:		any
+		vy from input for information passing.
+	pv:		numpy.ndarray(shape=(n_x,n_y))
+		P-values of association testing (gamma==0).
+	gamma:	numpy.ndarray(shape=(n_x,n_y))
+		Maximum likelihood estimator of gamma in model.
+	alpha:	numpy.ndarray(shape=(n_x,n_y,n_cov))
+		Maximum likelihood estimator of alpha in model.
+	var_x:	numpy.ndarray(shape=(n_x,))
+		Variance of dx unexplained by covariates C.
+	var_y:	numpy.ndarray(shape=(n_y,))
+		Variance of dy unexplained by covariates C.
+		
+	"""
 	import numpy as np
 	from scipy.stats import beta
 	import logging
@@ -218,13 +221,45 @@ def association_test_1(vx,vy,dx,dy,dc,dci,dcr,dimreduce=0):
 	return [vx,vy,ansp,ansc,ansa,ansvx,ansvy]
 
 def association_test_2(vx,vy,dx,dy,dc,sselectx,dimreduce=0):
-	"""Like association_test_1, but takes a different subset of samples for each X.
+	"""Like association_test_1, but takes a different subset of samples for each x.
 
-	See association_test_1 for details on unexplained variables.
-	sselectx:	numpy.array(shape=(nx,ns),bool). Subset of samples to use for each X.
-	Return:		Same as association_test_1, except:
-	var_x:	numpy.array(shape=(nx)). variance of dx unexplained by covariates.
-	var_y:	numpy.array(shape=(nx,ny)). variance of dx/dy unexplained by covariates."""
+	See association_test_1 for additional details.
+
+	Parameters
+	----------
+	vx:		any
+		Starting indices of dx. Only used for information passing.
+	vy:		any
+		Starting indices of dy. Only used for information passing.
+	dx:		numpy.ndarray(shape=(n_x,n_cell)).
+		Predictor matrix for a list of vector x to be tested, e.g. gene expression or grouping.
+	dy:		numpy.ndarray(shape=(n_y,n_cell)).
+		Target matrix for a list of vector y to be tested, e.g. gene expression.
+	dc:		numpy.ndarray(shape=(n_cov,n_cell)).
+		Covariate matrix as C.
+	sselectx:	numpy.ndarray(shape=(n_x,n_cell),dtype=bool)
+		Subset of samples to use for each x.
+	dimreduce:	numpy.ndarray(shape=(ny,),dtype='uint') or int.
+		If each vector y doesn't have full rank in the first place, this parameter is the loss of degree of freedom to allow for accurate P-value computation.
+		
+	Returns
+	--------
+	vx:		any
+		vx from input for information passing.
+	vy:		any
+		vy from input for information passing.
+	pv:		numpy.ndarray(shape=(n_x,n_y))
+		P-values of association testing (gamma==0).
+	gamma:	numpy.ndarray(shape=(n_x,n_y))
+		Maximum likelihood estimator of gamma in model.
+	alpha:	numpy.ndarray(shape=(n_x,n_y,n_cov))
+		Maximum likelihood estimator of alpha in model.
+	var_x:	numpy.ndarray(shape=(n_x,))
+		Variance of dx unexplained by covariates C.
+	var_y:	numpy.ndarray(shape=(n_x,n_y))
+		Variance of dy unexplained by covariates C.
+	
+	"""
 	import numpy as np
 	import logging
 	from scipy.stats import beta
@@ -291,24 +326,74 @@ def association_test_2(vx,vy,dx,dy,dc,sselectx,dimreduce=0):
 	return [vx,vy,ansp,ansc,ansa,ansvx,ansvy]
 
 def prod1(vx,vy,dx,dy):
+	"""Pickleable function for matrix product that keeps information
+	
+	Parameters
+	-------------
+	vx:	any
+		Information passed
+	vy:	any
+		Information passed
+	dx: numpy.ndarray(shape=(...,n))
+		Matrix for multiplication
+	dy: numpy.ndarray(shape=(...,n))
+		Matrix for multiplication
+	
+	Returns
+	---------
+	vx: any
+		vx
+	vy:	any
+		vy
+	product: numpy.ndarray(shape=(...))
+		dx\ @\ dy.T
+		
+	"""
 	import numpy as np
-	return [vx,vy,np.matmul(dx,dy.T)]
+	return (vx,vy,np.matmul(dx,dy.T))
 
 def association_test_4(vx,vy,prod,prody,prodyy,na,dimreduce=0,**ka):
-	"""Like association_test_1, but regards all other X's as covariates when testing each X.
+	"""Like association_test_1, but regards all other x's as covariates when testing each x.
 
-	See association_test_1 for details on unexplained variables.
-	Note:	Other X's are treated as covariates but would not include their alphas in return to reduce memory footprint.
-	vx,
-	vy:		Starting indices of dx and dy for computation. vy is only used for info passing.
-	prod:	Matrix product of A*A.T, where A=numpy.block([dx,dc])
-	prody:	Matrix product of A*Y.T, where A=numpy.block([dx,dc])
-	prodyy:	Matrix product of diag(Y*Y.T).
-	na:		[nx,ny,nc,ns,lenx] Numbers of (Xs, Ys, Cs, samples/cells, X to compute association for)
-	ka:		Keyword args for inv_rank.
-	Return:	Same as association_test_1, except:
-	var_x:	numpy.array(shape=(lenx,)). Variance of dx unexplained by covariates.
-	var_y:	numpy.array(shape=(lenx,ny)). Variance of dy unexplained by covariates."""
+	See association_test_1 for additional details. Other x's are treated as covariates but their coefficients (alpha) would not be returned to reduce memory footprint.
+
+	Parameters
+	----------
+	vx:		any
+		Starting indices of dx.
+	vy:		any
+		Starting indices of dy. Only used for information passing.
+	prod:	numpy.ndarray(shape=(n_x+n_cov,n_x+n_cov))
+		A\ @\ A.T, where A=numpy.block([dx,dc]).
+	prody:	numpy.ndarray(shape=(n_x+n_cov,n_y))
+		A\ @\ dy.T, where A=numpy.block([dx,dc])
+	prodyy:	numpy.ndarray(shape=(n_y,))
+		(dy**2).sum(axis=1)
+	na:		tuple
+		(n_x,n_y,n_cov,n_cell,lenx). Numbers of (x's, y's, covariates, cells, x's to compute association for)
+	dimreduce:	numpy.ndarray(shape=(ny,),dtype='uint') or int.
+		If each vector y doesn't have full rank in the first place, this parameter is the loss of degree of freedom to allow for accurate P-value computation.
+	ka:		dict
+		Keyword arguments passed to inv_rank.
+		
+	Returns
+	--------
+	vx:		any
+		vx from input for information passing.
+	vy:		any
+		vy from input for information passing.
+	pv:		numpy.ndarray(shape=(n_x,n_y))
+		P-values of association testing (gamma==0).
+	gamma:	numpy.ndarray(shape=(n_x,n_y))
+		Maximum likelihood estimator of gamma in model.
+	alpha:	numpy.ndarray(shape=(n_x,n_y,n_cov))
+		Maximum likelihood estimator of alpha in model.
+	var_x:	numpy.ndarray(shape=(lenx,))
+		Variance of dx unexplained by covariates C.
+	var_y:	numpy.ndarray(shape=(lenx,n_y))
+		Variance of dy unexplained by covariates C.
+	
+	"""
 	import numpy as np
 	from scipy.stats import beta
 	import logging

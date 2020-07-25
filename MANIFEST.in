@@ -1,11 +1,13 @@
 include LICENSE README.rst UPDATES KNOWN_ISSUES
+
 recursive-include examples *.md *.sh *.py *.ipynb *.xz
+include examples/README
+recursive-exclude examples/*/*/.ipynb_checkpoints *
+
 include docs/Makefile
 recursive-include docs/source *
 recursive-include docs/build/html *
 include docs/build/latex/normalisr.pdf
 include docs/preprint/ICML2020-WCB.pdf
-
 exclude docs/build/html/.buildinfo
 recursive-exclude docs/build/html/sources *
-recursive-exclude examples/*/*/.ipynb_checkpoints *
