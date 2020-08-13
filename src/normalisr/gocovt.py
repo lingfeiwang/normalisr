@@ -26,7 +26,7 @@ def pc1(d):
 def goe(genelist,go_file,goa_file,bg=None,nmin=5,conversion=None,evidence_set= {'EXP','IDA','IPI','IMP','IGI','HTP','HDA','HMP','HGI','IBA','IBD','IKR','IRD','ISS','ISO','ISA','ISM'}):
 	"""Finds GO enrichment with goatools (0.7.11 tested).
 	
-	WARNING: This method is inexact for multi-maps in gene name conversion. However, it has a negligible effect in top GO component removal in single-cell co-expression.
+	**WARNING**\ : This method is inexact for multi-maps in gene name conversion. However, it has a negligible effect in top GO component removal in single-cell co-expression.
 
 	Parameters
 	------------
@@ -52,7 +52,7 @@ def goe(genelist,go_file,goa_file,bg=None,nmin=5,conversion=None,evidence_set= {
 		* species:		Species for gene name conversion. Examples: 'human', 'mouse'.
 
 	evidence_set:	set of str
-		`GO evidences <http://geneontology.org/docs/guide-go-evidence-codes/>`_ to include. Defaults for non-expression based results.
+		`GO evidences <http://geneontology.org/docs/guide-go-evidence-codes/>`_ to include. Defaults to non-expression based results to avoid circular reasoning bias.
 	
 	Returns
 	----------

@@ -40,6 +40,7 @@ def coex(dt,dc,bs=0,nth=1,**ka):
 	-----------------
 	dimreduce:	numpy.ndarray(shape=(n_gene,),dtype=int) or int
 		If dt doesn't have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.
+		
 	"""
 	import numpy as np
 	import logging

@@ -150,11 +150,14 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>m</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>..</em><em>,</em><em>n</em><em>,</em><em>n</em><em>)</em><em>,</em><em>dtype=float</em><em>)</em>) – 2-D or higher matrix to be inverted</p></li>
 <li><p><strong>tol</strong> (<em>float</em>) – Eigenvalues &lt; tol*maximum eigenvalue are treated as zero.</p></li>
-<li><p><strong>method</strong> (<em>str</em>) – Method to compute eigenvalues:
-* auto: Uses scipy for n&lt;mpc or mpc==0 and sklearn otherwise
-* scipy: Uses scipy.linalg.svd
-* scipys: NOT IMPLEMENTED. Uses scipy.sparse.linalg.svds
-* sklearn: Uses sklearn.decomposition.TruncatedSVD</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – <p>Method to compute eigenvalues:</p>
+<ul>
+<li><p>auto: Uses scipy for n&lt;mpc or mpc==0 and sklearn otherwise</p></li>
+<li><p>scipy: Uses scipy.linalg.svd</p></li>
+<li><p>scipys: NOT IMPLEMENTED. Uses scipy.sparse.linalg.svds</p></li>
+<li><p>sklearn: Uses sklearn.decomposition.TruncatedSVD</p></li>
+</ul>
+</p></li>
 <li><p><strong>logger</strong> (<em>object</em>) – Logger to output warning. Defaults (None) to logging module</p></li>
 <li><p><strong>mpc</strong> (<em>int</em>) – Maximum rank or number of eigenvalues/eigenvectors to consider.
 Defaults to 0 to disable limit.
@@ -169,8 +172,8 @@ Only effective when method=sklearn, or =auto that defaults to sklearn.
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>mi</strong> (<em>numpy.ndarray(shape=(…,n,n),dtype=float) as inverse matrices</em>)</p></li>
-<li><p><strong>r</strong> (<em>numpy.ndarray(shape=(…),dtype=int) or int as ranks</em>)</p></li>
+<li><p><strong>mi</strong> (<em>numpy.ndarray(shape=(…,n,n),dtype=float)</em>) – Pseudo-inverse matrices</p></li>
+<li><p><strong>r</strong> (<em>numpy.ndarray(shape=(…),dtype=int) or int</em>) – Matrix ranks</p></li>
 </ul>
 </p>
 </dd>
@@ -207,7 +210,7 @@ Only effective when method=sklearn, or =auto that defaults to sklearn.
 <dl class="py function">
 <dt id="normalisr.binnet.bh">
 <code class="sig-prename descclassname">normalisr.binnet.</code><code class="sig-name descname">bh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pv</span></em>, <em class="sig-param"><span class="n">weight</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.binnet.bh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert P-values to Q-values using Benjamini–Hochberg procedure.</p>
+<dd><p>Converts P-values to Q-values using Benjamini–Hochberg procedure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -271,7 +274,7 @@ Only effective when method=sklearn, or =auto that defaults to sklearn.
 <dl class="py function">
 <dt id="normalisr.binnet.rediag">
 <code class="sig-prename descclassname">normalisr.binnet.</code><code class="sig-name descname">rediag</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">fill</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.binnet.rediag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a ‘nodiag’ed vector back to matrix of original shape.</p>
+<dd><p>Converts a ‘nodiag’ed vector back to matrix of original shape.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -407,7 +410,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <dt id="normalisr.gocovt.goe">
 <code class="sig-prename descclassname">normalisr.gocovt.</code><code class="sig-name descname">goe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">genelist</span></em>, <em class="sig-param"><span class="n">go_file</span></em>, <em class="sig-param"><span class="n">goa_file</span></em>, <em class="sig-param"><span class="n">bg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nmin</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">conversion</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">evidence_set</span><span class="o">=</span><span class="default_value">{'EXP', 'HDA', 'HGI', 'HMP', 'HTP', 'IBA', 'IBD', 'IDA', 'IGI', 'IKR', 'IMP', 'IPI', 'IRD', 'ISA', 'ISM', 'ISO', 'ISS'}</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.gocovt.goe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds GO enrichment with goatools (0.7.11 tested).</p>
-<p>WARNING: This method is inexact for multi-maps in gene name conversion. However, it has a negligible effect in top GO component removal in single-cell co-expression.</p>
+<p><strong>WARNING</strong>: This method is inexact for multi-maps in gene name conversion. However, it has a negligible effect in top GO component removal in single-cell co-expression.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -430,7 +433,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <li><p>species:              Species for gene name conversion. Examples: ‘human’, ‘mouse’.</p></li>
 </ul>
 </p></li>
-<li><p><strong>evidence_set</strong> (<em>set of str</em>) – <a class="reference external" href="http://geneontology.org/docs/guide-go-evidence-codes/">GO evidences</a> to include. Defaults for non-expression based results.</p></li>
+<li><p><strong>evidence_set</strong> (<em>set of str</em>) – <a class="reference external" href="http://geneontology.org/docs/guide-go-evidence-codes/">GO evidences</a> to include. Defaults to non-expression based results to avoid circular reasoning bias.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -520,7 +523,8 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <dt id="normalisr.lcpm.lcpm">
 <code class="sig-prename descclassname">normalisr.lcpm.</code><code class="sig-name descname">lcpm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reads</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ntot</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">varscale</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.lcpm.lcpm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes Bayesian log CPM from raw read counts.</p>
-<p>The technical sampling process is modelled as a Binomial distribution. The logCPM given read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.</p>
+<p>The technical sampling process is modelled as a Binomial distribution. The logCPM given read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.
+<strong>Warning</strong>: Modifying keyword arguments other than nth or seed is neither recommended nor supported for function ‘lcpm’. Do so at your own risk.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -539,8 +543,8 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <li><p><strong>var</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Variance of lcpm’s every entry’s posterior distribution.</p></li>
 <li><p><strong>cov</strong> (<em>numpy.ndarray(shape=(3,n_cell))</em>) – Cellular summary covariates computed from read count matrix that may confound lcpm. Contains:</p>
 <ul>
-<li><p>cov[0]: Log total read count per cell</p></li>
-<li><p>cov[1]: Number of 0-read genes per cell</p></li>
+<li><p>cov[0]:       Log total read count per cell</p></li>
+<li><p>cov[1]:       Number of 0-read genes per cell</p></li>
 <li><p>cov[2]:       cov[0]**2</p></li>
 </ul>
 </li>
@@ -555,6 +559,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <code class="sig-prename descclassname">normalisr.lcpm.</code><code class="sig-name descname">scaling_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">varname</span><span class="o">=</span><span class="default_value">'nt0mean'</span></em>, <em class="sig-param"><span class="n">v0</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">v1</span><span class="o">=</span><span class="default_value">'max'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.lcpm.scaling_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes scaling factor of variance normalization for every gene.</p>
 <p>Lowly expressed genes need full variance normalization because of technical confounding from sequencing depth. Highly expressed genes do not need variance normalization because they are already accurately measured. The scaling factor operates as a exponential factor on the variance normalization scale for each gene. It should be maximum/minimum for genes with lowest/highest expression.</p>
+<p><strong>Warning</strong>: Modifying keyword arguments is neither recommended nor supported for function ‘scaling_factor’. Do so at your own risk.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -590,7 +595,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <dl class="py function">
 <dt id="normalisr.lcpm.trigamma">
 <code class="sig-prename descclassname">normalisr.lcpm.</code><code class="sig-name descname">trigamma</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.lcpm.trigamma" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Trigamma_function">Tri-gamma function</a></p>
+<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Trigamma_function">Tri-gamma function</a> .</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>float</em><em> or </em><em>numpy.ndarray</em>) – Input value(s)</p>
@@ -611,7 +616,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <dt id="normalisr.norm.compute_var">
 <code class="sig-prename descclassname">normalisr.norm.</code><code class="sig-name descname">compute_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">stepmax</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">1e-06</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.norm.compute_var" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes variance normalization scale for each cell.</p>
-<p>Performs a log-linear fit of the variance of each cell with covariates. Optionally use EM-like method to iteratively fit mean and variance. For EM-like method, early-stopping is suggested because of overfitting issues.</p>
+<p>Performs a log-linear fit of the variance of each cell with covariates. Optionally use Expectation-Maximization(EM)-like method to iteratively fit mean and variance. For EM-like method, early-stopping is suggested because of overfitting issues.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

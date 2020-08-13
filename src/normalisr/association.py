@@ -13,10 +13,12 @@ def inv_rank(m,tol=1E-8,method='auto',logger=None,mpc=0,qr=0,**ka):
 		Eigenvalues < tol*maximum eigenvalue are treated as zero.
 	method:	str
 		Method to compute eigenvalues:
+		
 		* auto:	Uses scipy for n<mpc or mpc==0 and sklearn otherwise
 		* scipy: Uses scipy.linalg.svd
 		* scipys: NOT IMPLEMENTED. Uses scipy.sparse.linalg.svds
 		* sklearn: Uses sklearn.decomposition.TruncatedSVD
+		
 	logger:	object
 		Logger to output warning. Defaults (None) to logging module
 	mpc:	int
@@ -33,8 +35,10 @@ def inv_rank(m,tol=1E-8,method='auto',logger=None,mpc=0,qr=0,**ka):
 
 	Returns
 	-------
-	mi:		numpy.ndarray(shape=(...,n,n),dtype=float) as inverse matrices
-	r:		numpy.ndarray(shape=(...),dtype=int) or int as ranks
+	mi:		numpy.ndarray(shape=(...,n,n),dtype=float)
+		Pseudo-inverse matrices
+	r:		numpy.ndarray(shape=(...),dtype=int) or int
+		Matrix ranks
 
 	"""
 	import numpy as np
@@ -64,7 +68,7 @@ def inv_rank(m,tol=1E-8,method='auto',logger=None,mpc=0,qr=0,**ka):
 			try:
 				s=svd(m,**ka)
 			except LinAlgError as e:
-				logger.warn("Default scipy.linalg.svd failed. Falling back to option lapack_driver='gesvd'. Expecting much slower computation.")
+				logger.warning("Default scipy.linalg.svd failed. Falling back to option lapack_driver='gesvd'. Expecting much slower computation.")
 				s=svd(m,lapack_driver='gesvd',**ka)
 			n2=n-np.searchsorted(s[1][::-1],tol*s[1][0])
 			if mpc>0:
@@ -105,7 +109,7 @@ def inv_rank(m,tol=1E-8,method='auto',logger=None,mpc=0,qr=0,**ka):
 				except LinAlgError as e:
 					if not warned:
 						warned=True
-						logger.warn("Default scipy.linalg.svd failed. Falling back to option lapack_driver='gesvd'. Expecting much slower computation.")
+						logger.warning("Default scipy.linalg.svd failed. Falling back to option lapack_driver='gesvd'. Expecting much slower computation.")
 					s.append(svd(xi,lapack_driver='gesvd',**ka))
 			n2=n-np.array([np.searchsorted(x[1][::-1],tol*x[1][0]) for x in s])
 			ans=[np.matmul(x[2][:y].T/x[1][:y],x[2][:y]).T for x,y in zip(s,n2)]
@@ -181,7 +185,7 @@ def association_test_1(vx,vy,dx,dy,dc,dci,dcr,dimreduce=0):
 		raise ValueError('Unmatching dx/dy/dc dimensions.')
 	nc=dc.shape[0]
 	if nc==0:
-		logging.warn('No covariate dc input.')
+		logging.warning('No covariate dc input.')
 	elif dci.shape!=(nc,nc):
 		raise ValueError('Unmatching dci dimensions.')
 	if dcr<0:
@@ -270,7 +274,7 @@ def association_test_2(vx,vy,dx,dy,dc,sselectx,dimreduce=0):
 		raise ValueError('Unmatching dx/dy/dc dimensions.')
 	nc=dc.shape[0]
 	if nc==0:
-		logging.warn('No covariate dc input.')
+		logging.warning('No covariate dc input.')
 	if sselectx.shape!=dx.shape:
 		raise ValueError('Unmatching sselectx dimensions.')
 
@@ -403,7 +407,7 @@ def association_test_4(vx,vy,prod,prody,prodyy,na,dimreduce=0,**ka):
 	if nx==0 or ny==0 or n==0:
 		raise ValueError('Dimensions in na==0 detected.')
 	if nc==0:
-		logging.warn('No covariate dc input.')
+		logging.warning('No covariate dc input.')
 	if lenx<=0:
 		raise ValueError('lenx must be positive.')
 	if vx<0 or vx+lenx>nx:

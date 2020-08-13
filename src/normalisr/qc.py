@@ -28,6 +28,7 @@ def qc_reads(reads,n_gene,nc_gene,ncp_gene,n_cell,nt_cell,ntp_cell):
 		Array of indices of genes passed QC.
 	cells_select:	numpy.ndarray(dtype='uint')
 		Array of indices of cells passed QC.
+		
 	"""
 	import numpy as np
 	import logging
@@ -97,6 +98,7 @@ def qc_outlier(dw,pcut=1E-10,outrate=0.02):
 	-------
 	numpy.ndarray(shape=(n_cell,),dtype=bool)
 		Whether each cell passed QC
+		
 	"""
 	import numpy as np
 	from sklearn.linear_model import LinearRegression as lr0

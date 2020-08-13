@@ -16,6 +16,7 @@ def normcov(dc,c=True):
 	--------
 	numpy.ndarray(shape=(n_cov+1 if c else n_cov,n_cell))
 		Processed covariate matrix.
+		
 	"""
 	import numpy as np
 	import logging,warnings
@@ -66,6 +67,7 @@ def compute_var(dt,dc,stepmax=1,eps=1E-6):
 	-------
 	numpy.ndarray(shape=(n_cell,))
 		Inverse sqrt of fitted variance for each cell, i.e. the multiplier for variance normalization. For iterative normalization, the optimal step will be returned, defined as having the minimal max relative change across cells.
+		
 	"""
 	import numpy as np
 	from sklearn.linear_model import LinearRegression as lr0
@@ -155,6 +157,7 @@ def normvar(dt,dc,w,wt,dextra=None,cat=1,keepvar=True):
 		Normalized covariate matrix.
 	dextran:numpy.ndarray(shape=(n_extra,n_cell))
 		Normalized extra data matrix.
+		
 	"""
 	import numpy as np
 	from .association import inv_rank

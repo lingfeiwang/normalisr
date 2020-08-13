@@ -77,6 +77,7 @@ def de(dg,dt,dc,bs=0,nth=1,single=0,**ka):
 
 	tol:		float, only for single=4
 		Eigenvalues < tol*(maximum eigenvalue) are treated as zero in SVD-based matrix inverse. Default is 1E-8.
+		
 	"""
 	import numpy as np
 	import logging

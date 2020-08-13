@@ -31,7 +31,7 @@ def nodiag(d,split=False):
 	return ans
 
 def rediag(d,fill=0,shape=None):
-	"""Convert a 'nodiag'ed vector back to matrix of original shape.
+	"""Converts a 'nodiag'ed vector back to matrix of original shape.
 
 	Parameters
 	------------
@@ -72,7 +72,7 @@ def rediag(d,fill=0,shape=None):
 	return m
 
 def bh(pv,weight=None):
-	"""Convert P-values to Q-values using Benjamini–Hochberg procedure.
+	"""Converts P-values to Q-values using Benjamini–Hochberg procedure.
 
 	Parameters
 	-----------
@@ -107,7 +107,7 @@ def bh(pv,weight=None):
 	pv2,ids=np.unique(pv,return_inverse=True)
 	n=pv2.size
 	if n==1:
-		logging.warn('Identical p-value in all entries.')
+		logging.warning('Identical p-value in all entries.')
 	w=np.zeros(n,dtype=pv.dtype)
 	for xi in range(n0):
 		w[ids[xi]]+=weight[xi]

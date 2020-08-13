@@ -178,7 +178,7 @@
 <dt id="normalisr.normalisr.compute_var">
 <code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">compute_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">stepmax</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">1e-06</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.compute_var" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes variance normalization scale for each cell.</p>
-<p>Performs a log-linear fit of the variance of each cell with covariates. Optionally use EM-like method to iteratively fit mean and variance. For EM-like method, early-stopping is suggested because of overfitting issues.</p>
+<p>Performs a log-linear fit of the variance of each cell with covariates. Optionally use Expectation-Maximization(EM)-like method to iteratively fit mean and variance. For EM-like method, early-stopping is suggested because of overfitting issues.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -298,7 +298,8 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <dt id="normalisr.normalisr.lcpm">
 <code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">lcpm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reads</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ntot</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">varscale</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.lcpm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes Bayesian log CPM from raw read counts.</p>
-<p>The technical sampling process is modelled as a Binomial distribution. The logCPM given read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.</p>
+<p>The technical sampling process is modelled as a Binomial distribution. The logCPM given read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.
+<strong>Warning</strong>: Modifying keyword arguments other than nth or seed is neither recommended nor supported for function ‘lcpm’. Do so at your own risk.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -317,8 +318,8 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <li><p><strong>var</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Variance of lcpm’s every entry’s posterior distribution.</p></li>
 <li><p><strong>cov</strong> (<em>numpy.ndarray(shape=(3,n_cell))</em>) – Cellular summary covariates computed from read count matrix that may confound lcpm. Contains:</p>
 <ul>
-<li><p>cov[0]: Log total read count per cell</p></li>
-<li><p>cov[1]: Number of 0-read genes per cell</p></li>
+<li><p>cov[0]:       Log total read count per cell</p></li>
+<li><p>cov[1]:       Number of 0-read genes per cell</p></li>
 <li><p>cov[2]:       cov[0]**2</p></li>
 </ul>
 </li>
@@ -462,6 +463,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">scaling_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">varname</span><span class="o">=</span><span class="default_value">'nt0mean'</span></em>, <em class="sig-param"><span class="n">v0</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">v1</span><span class="o">=</span><span class="default_value">'max'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.scaling_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes scaling factor of variance normalization for every gene.</p>
 <p>Lowly expressed genes need full variance normalization because of technical confounding from sequencing depth. Highly expressed genes do not need variance normalization because they are already accurately measured. The scaling factor operates as a exponential factor on the variance normalization scale for each gene. It should be maximum/minimum for genes with lowest/highest expression.</p>
+<p><strong>Warning</strong>: Modifying keyword arguments is neither recommended nor supported for function ‘scaling_factor’. Do so at your own risk.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

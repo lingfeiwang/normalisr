@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 def trigamma(x):
-	"""`Tri-gamma function <https://en.wikipedia.org/wiki/Trigamma_function>`_
+	"""`Tri-gamma function <https://en.wikipedia.org/wiki/Trigamma_function>`_ .
 	
 	Parameters
 	------------
@@ -20,6 +20,7 @@ def lcpm(reads,normalize=True,nth=0,ntot=None,varscale=0,seed=None):
 	"""Computes Bayesian log CPM from raw read counts.
 
 	The technical sampling process is modelled as a Binomial distribution. The logCPM given read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.
+	**Warning**\ : Modifying keyword arguments other than nth or seed is neither recommended nor supported for function 'lcpm'. Do so at your own risk.
 
 	Parameters
 	----------
@@ -47,9 +48,10 @@ def lcpm(reads,normalize=True,nth=0,ntot=None,varscale=0,seed=None):
 	cov:	numpy.ndarray(shape=(3,n_cell))
 		Cellular summary covariates computed from read count matrix that may confound lcpm. Contains:
 
-		* cov[0]: Log total read count per cell
-		* cov[1]: Number of 0-read genes per cell
+		* cov[0]:	Log total read count per cell
+		* cov[1]:	Number of 0-read genes per cell
 		* cov[2]:	cov[0]**2
+		
 	"""
 	d=reads
 	import numpy as np
@@ -71,7 +73,10 @@ def lcpm(reads,normalize=True,nth=0,ntot=None,varscale=0,seed=None):
 		raise ValueError('Negative value in d detected.')
 	if varscale<0:
 		raise ValueError('varscale must be non-negative.')
-
+	if normalize!=True or ntot is not None or varscale!=0:
+		import logging
+		logging.warning("Modifying keyword arguments other than nth or seed is neither recommended nor supported for function 'lcpm'. Do so at your own risk.")
+		
 	nt,nc=d.shape
 	t0=d.sum()+2 if ntot is None else ntot+2
 	assert t0>2
@@ -134,6 +139,8 @@ def scaling_factor(dt,varname='nt0mean',v0=0,v1='max'):
 	"""Computes scaling factor of variance normalization for every gene.
 
 	Lowly expressed genes need full variance normalization because of technical confounding from sequencing depth. Highly expressed genes do not need variance normalization because they are already accurately measured. The scaling factor operates as a exponential factor on the variance normalization scale for each gene. It should be maximum/minimum for genes with lowest/highest expression.
+	
+	**Warning**\ : Modifying keyword arguments is neither recommended nor supported for function 'scaling_factor'. Do so at your own risk.
 
 	Parameters
 	----------
@@ -160,9 +167,13 @@ def scaling_factor(dt,varname='nt0mean',v0=0,v1='max'):
 	--------
 	numpy.ndarray(shape=(n_gene,))
 		Scaling factor of variance normalization for each gene
+		
 	"""
 	if dt.ndim!=2:
 		raise ValueError('dt must have 2 dimensions.')
+	if v0!=0 or v1!='max' or varname!='nt0mean':
+		import logging
+		logging.warning("Modifying keyword arguments is neither recommended nor supported for function 'scaling_factor'. Do so at your own risk.")
 
 	import numpy as np
 	if varname=='logtpropmean':
