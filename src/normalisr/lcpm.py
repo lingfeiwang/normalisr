@@ -20,6 +20,7 @@ def lcpm(reads,normalize=True,nth=0,ntot=None,varscale=0,seed=None):
 	"""Computes Bayesian log CPM from raw read counts.
 
 	The technical sampling process is modelled as a Binomial distribution. The logCPM given read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.
+	
 	**Warning**\ : Modifying keyword arguments other than nth or seed is neither recommended nor supported for function 'lcpm'. Do so at your own risk.
 
 	Parameters

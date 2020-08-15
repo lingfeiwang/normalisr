@@ -72,7 +72,7 @@ def goe(genelist,go_file,goa_file,bg=None,nmin=5,conversion=None,evidence_set= {
 	from goatools.associations import read_associations
 	from collections import defaultdict
 	import itertools
-	import mygene
+	from biothings_client import get_client
 	import pandas as pd
 	from os.path import join as pjoin
 	import logging
@@ -87,7 +87,7 @@ def goe(genelist,go_file,goa_file,bg=None,nmin=5,conversion=None,evidence_set= {
 	if conversion is not None:
 		assert len(conversion)==3
 		name_from,name_to,species=conversion
-		mg=mygene.MyGeneInfo()
+		mg=get_client('gene')
 		ans=set(genelist)
 		if bg is not None:
 			t1=set(bg)
