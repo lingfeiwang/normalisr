@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-def coex(dt,dc,**ka):
+
+def coex(dt, dc, **ka):
 	"""Performs co-expression analyses for all gene pairs.
 
 	Performs parallel computation with multiple processes on the same machine.
@@ -40,49 +41,12 @@ def coex(dt,dc,**ka):
 		Number of parallel processes. Set to 0 for using automatically detected CPU counts.
 	dimreduce:	numpy.ndarray(shape=(n_gene,),dtype=int) or int
 		If dt doesn't have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.
-		
+
 	"""
 	from .association import association_tests_1
-	ans=association_tests_1(dt,None,dc,lowmem=True,**ka)
-	
-	return (ans[0],ans[1],ans[3])
+	ans = association_tests_1(dt, None, dc, lowmem=True, **ka)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	return (ans[0], ans[1], ans[3])
 
 
 assert __name__ != "__main__"

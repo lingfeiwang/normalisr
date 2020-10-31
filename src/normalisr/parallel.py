@@ -2,14 +2,23 @@
 
 import multiprocessing
 
-autocount=lambda:multiprocessing.cpu_count()
+autocount = multiprocessing.cpu_count
+
 
 def autopooler_caller(a):
-	return a[0](*a[1],**a[2])
+	return a[0](*a[1], **a[2])
 
-def autopooler(n,it,*a,chunksize=1,dummy=False,return_iter=False,unordered=False,**ka):
+
+def autopooler(n,
+			   it,
+			   *a,
+			   chunksize=1,
+			   dummy=False,
+			   return_iter=False,
+			   unordered=False,
+			   **ka):
 	"""Uses multiprocessing.Pool or multiprocessing.dummy.Pool to run iterator in parallel.
-	
+
 	Parameters
 	------------
 	n:				int
@@ -28,12 +37,12 @@ def autopooler(n,it,*a,chunksize=1,dummy=False,return_iter=False,unordered=False
 		Whether the order of output matters.
 	ka:				dict
 		Keyword arguments passed to Pool
-	
+
 	Returns
 	----------
 	list (or iterator if return_iter) of any
 		Results returned by function(\*tuple,\*\*dict), in same order of the iterator if not unordered.
-		
+
 	"""
 	import multiprocessing
 	import logging
@@ -41,69 +50,28 @@ def autopooler(n,it,*a,chunksize=1,dummy=False,return_iter=False,unordered=False
 		import multiprocessing.dummy as m
 	else:
 		import multiprocessing as m
-	if n==0:
-		import logging
-		n=autocount()
+	if n == 0:
+		n = autocount()
 		logging.info('Using {} threads'.format(n))
-	if n==1:
-		ans=map(autopooler_caller,it)
+	if n == 1:
+		ans = map(autopooler_caller, it)
 		if not return_iter:
-			ans=list(ans)
-			assert len(ans)>0
+			ans = list(ans)
+			assert len(ans) > 0
 	else:
 		import itertools
-		#Catches iterator errors (only if occurs at the first), and emptiness
-		it=itertools.chain([next(it)],it)
-		with m.Pool(n,*a,**ka) as p:
+		# Catches iterator errors (only if occurs at the first), and emptiness
+		it = itertools.chain([next(it)], it)
+		with m.Pool(n, *a, **ka) as p:
 			if unordered:
-				ans=p.imap_unordered(autopooler_caller,it,chunksize)
+				ans = p.imap_unordered(autopooler_caller, it, chunksize)
 			else:
-				ans=p.imap(autopooler_caller,it,chunksize)
+				ans = p.imap(autopooler_caller, it, chunksize)
 			if not return_iter:
-				ans=list(ans)
+				ans = list(ans)
 			else:
 				raise NotImplementedError
 	return ans
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 assert __name__ != "__main__"
