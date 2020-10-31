@@ -81,6 +81,8 @@ p1.add_argument('scale_in', help='Input vector file of scaling factor of varianc
 p1.add_argument('exp_out', help='Output matrix file of normalized expressions, in the same format as lcpm_in.')
 p1.add_argument('cov_out',help='''Output matrix file of normalized covariates, in the same format.''')
 
+p1.add_argument('-n',dest='nth',action='store',type=int,default='0',help='Number of CPU cores to use. Default: all cores detected.')
+p1.add_argument('-b',dest='bs',action='store',type=int,help='Batch gene size for each parallel job. Defaults to 500.')
 
 p1=p1s.add_parser('de', help="Differential expression analysis.")
 p1.add_argument('design_in', help='Input design/predictor matrix file. Rows are predictors; columns are cells. No row or column name allowed. Each predictor/grouping is tested separately. How to treat other predictors depends on the method (-m). File type: tsv.')

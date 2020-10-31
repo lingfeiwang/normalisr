@@ -4,7 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User API &#8212; Normalisr  documentation</title>
     <link rel="stylesheet" href="static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
@@ -140,7 +140,7 @@
 
 <dl class="py function">
 <dt id="normalisr.normalisr.coex">
-<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">coex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">bs</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">ka</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.coex" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">coex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">ka</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.coex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs co-expression analyses for all gene pairs.</p>
 <p>Performs parallel computation with multiple processes on the same machine.</p>
 <dl>
@@ -155,8 +155,6 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype=float</em><em>)</em>) – Normalized expression matrix X.</p></li>
 <li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype=float</em><em>)</em>) – Normalized covariate matrix C.</p></li>
-<li><p><strong>bs</strong> (<em>int</em>) – Batch size, i.e. number of genes in each computing batch. Use 0 for default: Data transfer limited to 1GB, capped at bs=500.</p></li>
-<li><p><strong>nth</strong> (<em>int</em>) – Number of parallel processes. Set to 0 for using automatically detected CPU counts.</p></li>
 <li><p><strong>ka</strong> (<em>dict</em>) – Keyword arguments passed to normalisr.association.association_test_1. See below.</p></li>
 </ul>
 </dd>
@@ -169,7 +167,11 @@
 </p>
 </dd>
 <dt class="field-odd">Keyword Arguments</dt>
-<dd class="field-odd"><p><strong>dimreduce</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>)</em><em>,</em><em>dtype=int</em><em>) or </em><em>int</em>) – If dt doesn’t have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bs</strong> (<em>int</em>) – Batch size, i.e. number of genes in each computing batch. Use 0 for default: Data transfer limited to 1GB, capped at bs=500.</p></li>
+<li><p><strong>nth</strong> (<em>int</em>) – Number of parallel processes. Set to 0 for using automatically detected CPU counts.</p></li>
+<li><p><strong>dimreduce</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>)</em><em>,</em><em>dtype=int</em><em>) or </em><em>int</em>) – If dt doesn’t have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -182,8 +184,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>)</em><em></em>) – Bayesian LogCPM expression level matrix.</p></li>
-<li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>)</em><em></em>) – Covariate matrix.</p></li>
+<li><p><strong>dt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>)</em>) – Bayesian LogCPM expression level matrix.</p></li>
+<li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>)</em>) – Covariate matrix.</p></li>
 <li><p><strong>stepmax</strong> (<em>int</em>) – Maximum number of EM-like iterations of mean and variance normalization. Stop of iteration is also possible when relative accuracy target is reached. Defaults to 1, indicating no iterative normalization.</p></li>
 <li><p><strong>eps</strong> (<em>float</em>) – Relative accuracy target for early stopping. Constrains the maximum relative difference of fitted variance across cells compared to the last step. Defaults to 1E-6.</p></li>
 </ul>
@@ -296,7 +298,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 
 <dl class="py function">
 <dt id="normalisr.normalisr.lcpm">
-<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">lcpm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reads</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ntot</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">varscale</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.lcpm" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">lcpm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reads</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ntot</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">varscale</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lowmem</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.lcpm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes Bayesian log CPM from raw read counts.</p>
 <p>The technical sampling process is modelled as a Binomial distribution. The logCPM given read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.</p>
 <p><strong>Warning</strong>: Modifying keyword arguments other than nth or seed is neither recommended nor supported for function ‘lcpm’. Do so at your own risk.</p>
@@ -309,13 +311,14 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <li><p><strong>ntot</strong> (<em>int</em>) – Manually sets value of total number of reads in binomial distribution. Since the posterior distribution stablizes quickly as ntot increases, a large number, e.g. 1E9 is good for general use. Defaults to None to disable manual value.</p></li>
 <li><p><strong>varscale</strong> (<em>float</em>) – Resamples estimated expression using the posterior Beta distribution. varscale sets the scale of variance than its actual value from the posterior distribution. Defaults to 0, to compute expectation with no variance.</p></li>
 <li><p><strong>seed</strong> (<em>int</em>) – Initial random seed if set.</p></li>
+<li><p><strong>lowmem</strong> (<em>bool</em>) – Low memory mode disable mean and var in Returns and therefore saves memory.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>lcpm</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Estimated expression as logCPM from read counts.</p></li>
-<li><p><strong>mean</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Mean/Expectation of lcpm’s every entry’s posterior distribution.</p></li>
-<li><p><strong>var</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell))</em>) – Variance of lcpm’s every entry’s posterior distribution.</p></li>
+<li><p><strong>mean</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell)) or None</em>) – Mean/Expectation of lcpm’s every entry’s posterior distribution. None if lowmem=True.</p></li>
+<li><p><strong>var</strong> (<em>numpy.ndarray(shape=(n_gene,n_cell)) or None</em>) – Variance of lcpm’s every entry’s posterior distribution. None if lowmem=True.</p></li>
 <li><p><strong>cov</strong> (<em>numpy.ndarray(shape=(3,n_cell))</em>) – Cellular summary covariates computed from read count matrix that may confound lcpm. Contains:</p>
 <ul>
 <li><p>cov[0]:       Log total read count per cell</p></li>
@@ -352,7 +355,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 
 <dl class="py function">
 <dt id="normalisr.normalisr.normvar">
-<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">normvar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">wt</span></em>, <em class="sig-param"><span class="n">dextra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cat</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">keepvar</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.normvar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">normalisr.normalisr.</code><code class="sig-name descname">normvar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">wt</span></em>, <em class="sig-param"><span class="n">dextra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cat</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">bs</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">keepvar</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.normalisr.normvar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs mean and variance normalizations.</p>
 <p>Expression levels are normalized at mean and then at variance levels. Effectively each gene x is multiplied by w**wt[x] before removing covariates as dc*(w**wt[x]). Continuous covariates are normalized at variance levels. Effectively covariates are transformed to dc*w. Therefore, variance normalization for expression are scaled differently for each gene.</p>
 <dl class="field-list simple">
@@ -370,6 +373,8 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <li><p>2:    Yes</p></li>
 </ul>
 </p></li>
+<li><p><strong>nth</strong> (<em>int</em>) – Number of parallel threads.</p></li>
+<li><p><strong>bs</strong> (<em>int</em>) – Batch size for each job.</p></li>
 <li><p><strong>keepvar</strong> (<em>bool</em>) – Whether to maintain the variance of each gene invariant in mean normalization step. If so, expression variances are scaled back to original after mean normalization and before variance normalization. This function only affects overall variance level and its downstreams (e.g. differential expression log fold change). This function would not affect P-value computation. Default: True.</p></li>
 </ul>
 </dd>
@@ -478,7 +483,14 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 </ul>
 <p>Defaults to nt0mean.</p>
 </p></li>
-<li><p><strong>v0</strong><strong>,</strong><strong>v1</strong> (<em>float</em>) – <p>Variable values to set scaling factor to 0 (for v0) and 1 (for v1). Linear assignment is applied for values inbetween. Can be:</p>
+<li><p><strong>v0</strong> (<em>float</em>) – <p>Variable values to set scaling factor to 0 (for v0) and 1 (for v1). Linear assignment is applied for values inbetween. Can be:</p>
+<ul>
+<li><p>max:                  max</p></li>
+<li><p>min:                  min</p></li>
+<li><p>any float:    that float</p></li>
+</ul>
+</p></li>
+<li><p><strong>v1</strong> (<em>float</em>) – <p>Variable values to set scaling factor to 0 (for v0) and 1 (for v1). Linear assignment is applied for values inbetween. Can be:</p>
 <ul>
 <li><p>max:                  max</p></li>
 <li><p>min:                  min</p></li>
@@ -565,7 +577,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
       &copy;2020, Lingfei Wang.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

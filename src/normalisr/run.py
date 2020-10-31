@@ -63,7 +63,7 @@ def qc_reads(args):
 	from .qc import qc_reads
 	#Read input files
 	if args['sparse']:
-		d=file_read_coo(args['reads_in']).astype(int).toarray()
+		d=file_read_coo(args['reads_in']).astype(int,copy=False).toarray()
 	else:
 		d=file_read_tsv(args['reads_in'],dtype=int)
 	nt,ns=d.shape
@@ -93,7 +93,7 @@ def subset(args):
 
 	#Read input file
 	if args['sparse']:
-		d=file_read_coo(args['matrix_in']).astype(int).toarray()
+		d=file_read_coo(args['matrix_in']).astype(int,copy=False).toarray()
 	else:
 		d=file_read_tsv(args['matrix_in'])
 
@@ -134,7 +134,7 @@ def lcpm(args):
 	from .lcpm import lcpm,scaling_factor
 	#Read input files
 	if args['sparse']:
-		d=file_read_coo(args['reads_in']).astype(int)
+		d=file_read_coo(args['reads_in']).astype(int,copy=False)
 	else:
 		d=file_read_tsv(args['reads_in'],dtype=int)
 	if args['cov_in'] is not None:
@@ -197,7 +197,7 @@ def fitvar(args):
 def qc_outlier(args):
 	from .qc import qc_outlier
 	#Read input files
-	d=file_read_tsv(args['weights_in']).flatten()
+	d=file_read_tsv(args['weights_in']).ravel()
 	names=file_read_txtlist(args['cells_in'])
 	if len(names)!=len(d):
 		raise ValueError("Cell count in cells_in doesn't match entry count in weights_in.")
@@ -214,11 +214,16 @@ def normvar(args):
 	#Read input files
 	dt=file_read_tsv(args['lcpm_in'])
 	dc=file_read_tsv(args['cov_in'])
-	dmult=file_read_tsv(args['weights_in']).flatten()
-	dw=file_read_tsv(args['scale_in']).flatten()
+	dmult=file_read_tsv(args['weights_in']).ravel()
+	dw=file_read_tsv(args['scale_in']).ravel()
 	#Run computation
+	ka=dict()
+	if args['nth'] is not None:
+		ka['nth']=args['nth']
+	if args['bs'] is not None:
+		ka['bs']=args['bs']
 	logging.debug('Start calculation.')
-	ans=normvar(dt,dc,dmult,dw)
+	ans=normvar(dt,dc,dmult,dw,**ka)
 	logging.debug('Finish calculation.')
 	#Write output files
 	file_write_tsv(args['exp_out'],ans[0])
@@ -285,14 +290,14 @@ def binnet(args):
 	ans=binnet_func(net,args['qcut'])
 	logging.debug('Finish calculation.')
 	#Write output files
-	file_write_tsv(args['net_out'],ans.astype('u1'),fmt=fmt_int)
+	file_write_tsv(args['net_out'],ans.astype('u1',copy=False),fmt=fmt_int)
 
 def gocovt(args):
 	from .gocovt import gotop,pccovt
 	#Read input files
 	dt=file_read_tsv(args['exp_in'])
 	dc=file_read_tsv(args['cov_in'])
-	net=file_read_tsv(args['net_in'],dtype='u1').astype(bool)
+	net=file_read_tsv(args['net_in'],dtype='u1').astype(bool,copy=False)
 	namet=file_read_txtlist(args['genes_in'])
 	ka=dict()
 	if 'n' in args:
@@ -318,7 +323,7 @@ def gocovt(args):
 def cohort_kinshipeigen(args):
 	#Read input files
 	mk=file_read_tsv(args['kinship_in'])
-	nc=file_read_tsv(args['ncell_in'],dtype=int).flatten()
+	nc=file_read_tsv(args['ncell_in'],dtype=int).ravel()
 	#Run computation
 	from .cohort.kinship import eigen
 	logging.debug('Start calculation.')
@@ -332,8 +337,8 @@ def cohort_heritability(args):
 	#Read input files
 	dt=file_read_tsv(args['transcript_in'])
 	dc=file_read_tsv(args['cov_in'])
-	nc=file_read_tsv(args['ncell_in'],dtype=int).flatten()
-	mkl=file_read_tsv(args['eigenvalue_in']).flatten()
+	nc=file_read_tsv(args['ncell_in'],dtype=int).ravel()
+	mkl=file_read_tsv(args['eigenvalue_in']).ravel()
 	mku=file_read_tsv(args['eigenvector_in'])
 	#Run computation
 	from .cohort.heritability import estimate
@@ -350,11 +355,11 @@ def cohort_eqtl(args):
 	dg=file_read_tsv(args['genotype_in'],dtype=int)
 	dt=file_read_tsv(args['transcript_in'])
 	dc=file_read_tsv(args['cov_in']) if 'cov_in' in args else None
-	ns=file_read_tsv(args['ncell_in'],dtype=int).flatten()
-	mkl=file_read_tsv(args['eigenvalue_in']).flatten()
+	ns=file_read_tsv(args['ncell_in'],dtype=int).ravel()
+	mkl=file_read_tsv(args['eigenvalue_in']).ravel()
 	mku=file_read_tsv(args['eigenvector_in'])
-	sigma=file_read_tsv(args['sigma_in']).flatten()
-	beta=file_read_tsv(args['beta_in']).flatten()
+	sigma=file_read_tsv(args['sigma_in']).ravel()
+	beta=file_read_tsv(args['beta_in']).ravel()
 	#Run computation
 	from .cohort.eqtl import eqtl as eqtlf
 	logging.debug('Start calculation.')
@@ -368,10 +373,10 @@ def cohort_coex(args):
 	#Read input files
 	dt=file_read_tsv(args['transcript_in'])
 	dc=file_read_tsv(args['cov_in']) if 'cov_in' in args else None
-	ns=file_read_tsv(args['ncell_in'],dtype=int).flatten()
-	mkl=file_read_tsv(args['eigenvalue_in']).flatten()
+	ns=file_read_tsv(args['ncell_in'],dtype=int).ravel()
+	mkl=file_read_tsv(args['eigenvalue_in']).ravel()
 	mku=file_read_tsv(args['eigenvector_in'])
-	beta=file_read_tsv(args['beta_in']).flatten()
+	beta=file_read_tsv(args['beta_in']).ravel()
 	#Run computation
 	from .cohort.coex import coex as coexf
 	logging.debug('Start calculation.')

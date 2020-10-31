@@ -19,7 +19,7 @@ def pc1(d):
 	t1=t1-t1.mean(axis=0)
 	t1=t1/(np.sqrt((t1**2).mean(axis=0))+1E-200)
 	t0=TruncatedSVD(n_components=1)
-	t1=t0.fit_transform(t1).T.astype(d.dtype).flatten()
+	t1=t0.fit_transform(t1).T.astype(d.dtype,copy=False).ravel()
 	assert t1.shape==(d.shape[1],)
 	return t1
 

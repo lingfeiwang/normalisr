@@ -3,7 +3,7 @@
 
 pkgname="normalisr"
 pkgnamefull="Normalisr Offers Robust Modelling of Associations Linearly In Single-cell RNA-seq"
-version=[0,4,2]
+version=[0,5,0]
 license="BSD-3-Clause"
 url="https://github.com/lingfeiwang/"+pkgname
 author="Lingfei Wang"
@@ -28,7 +28,7 @@ def pkg_setup():
 		# download_url=url,
 		scripts=['bin/normalisr'],
 		# include_package_data=True,
-		install_requires=['numpy','scipy','argparse','pandas','scikit-learn','biothings_client','goatools>=0.7.11'],
+		install_requires=['numpy','scipy','pandas','scikit-learn','biothings_client','goatools>=0.7.11'],
 		classifiers=['Development Status :: 4 - Beta',
 			'License :: OSI Approved :: BSD License',
 			'Environment :: Console',

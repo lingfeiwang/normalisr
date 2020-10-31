@@ -16,7 +16,7 @@ def trigamma(x):
 	from scipy.special import polygamma
 	return polygamma(1,x)
 
-def lcpm(reads,normalize=True,nth=0,ntot=None,varscale=0,seed=None):
+def lcpm(reads,normalize=True,nth=0,ntot=None,varscale=0,seed=None,lowmem=True):
 	"""Computes Bayesian log CPM from raw read counts.
 
 	The technical sampling process is modelled as a Binomial distribution. The logCPM given read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.
@@ -37,15 +37,17 @@ def lcpm(reads,normalize=True,nth=0,ntot=None,varscale=0,seed=None):
 		Resamples estimated expression using the posterior Beta distribution. varscale sets the scale of variance than its actual value from the posterior distribution. Defaults to 0, to compute expectation with no variance.
 	seed:		int
 		Initial random seed if set.
+	lowmem:		bool
+		Low memory mode disable mean and var in Returns and therefore saves memory.
 
 	Returns
 	-------
 	lcpm:	numpy.ndarray(shape=(n_gene,n_cell))
 		Estimated expression as logCPM from read counts.
-	mean:	numpy.ndarray(shape=(n_gene,n_cell))
-		Mean/Expectation of lcpm's every entry's posterior distribution.
-	var:	numpy.ndarray(shape=(n_gene,n_cell))
-		Variance of lcpm's every entry's posterior distribution.
+	mean:	numpy.ndarray(shape=(n_gene,n_cell)) or None
+		Mean/Expectation of lcpm's every entry's posterior distribution. None if lowmem=True.
+	var:	numpy.ndarray(shape=(n_gene,n_cell)) or None
+		Variance of lcpm's every entry's posterior distribution. None if lowmem=True.
 	cov:	numpy.ndarray(shape=(3,n_cell))
 		Cellular summary covariates computed from read count matrix that may confound lcpm. Contains:
 
@@ -85,7 +87,7 @@ def lcpm(reads,normalize=True,nth=0,ntot=None,varscale=0,seed=None):
 	t1=[float(x) if hasattr(x,'shape') else x for x in t1]
 
 	#Paralleled gammas
-	dvs=np.concatenate([[0],np.unique((d.data if issparse else d).flatten())])
+	dvs=np.concatenate([[0],np.unique((d.data if issparse else d).ravel())])
 	t4=dvs.max()
 	t2=autopooler(nth1,map(lambda x:[digamma,[x],dict()],np.array_split(1+dvs,nth1)),dummy=True)
 	t2=dict(zip(dvs,np.concatenate(list(t2))-t1[0]))
@@ -95,33 +97,74 @@ def lcpm(reads,normalize=True,nth=0,ntot=None,varscale=0,seed=None):
 		t3=dict(zip(dvs,np.concatenate(list(t3))-t1[1]))
 		t3=np.array([t3[x] if x in t3 else 0 for x in np.arange(t4+1)])
 
-	if issparse and d.size<np.prod(d.shape)/100:
-		#Sparse
-		t4=np.array(d.nonzero())
-		d=d.toarray()
-		dmean=np.ones(d.shape)*t2[0]
-		dmean[t4[0],t4[1]]=[t2[x] for x in d[t4[0],t4[1]]]
-		if varscale!=0:
-			dvar=np.ones(d.shape)*t3[0]
-			dvar[t4[0],t4[1]]=[t3[x] for x in d[t4[0],t4[1]]]
-		else:
-			dvar=np.zeros(d.shape)
-	else:
-		if issparse:
+	if lowmem:
+		if issparse and d.size<np.prod(d.shape)/100:
+			#Sparse
+			t4=np.array(d.nonzero())
 			d=d.toarray()
-		d=d.astype(int)
-		dmean=t2[d]
-		dvar=t3[d] if varscale!=0 else np.zeros(d.shape)
+			if varscale!=0:
+				#First compute variance
+				dtn=np.ones(d.shape)*t3[0]
+				dtn[t4[0],t4[1]]=[t3[x] for x in d[t4[0],t4[1]]]
+				del t3
+				dtn*=varscale
+				dtn=np.sqrt(dtn)
+				dtn*=np.random.randn(nt,nc)
+				#Then mean
+				dtn+=t2[0]
+				dtn[t4[0],t4[1]]+=[t2[x]-t2[0] for x in d[t4[0],t4[1]]]
+			else:
+				dtn=np.ones(d.shape)*t2[0]
+				dtn[t4[0],t4[1]]=[t2[x] for x in d[t4[0],t4[1]]]
+		else:
+			if issparse:
+				d=d.toarray()
+			if not np.issubdtype(d.dtype,np.integer):
+				d=d.astype(int,copy=False)
+			#First compute variance
+			if varscale!=0:
+				dtn=t3[d]*varscale
+				del t3
+				dtn=np.sqrt(dtn)
+				dtn*=np.random.randn(nt,nc)
+				dtn+=t2[d]
+			else:
+				dtn=t2[d]
+		del t2
+		assert dtn.shape==(nt,nc)
+		#Normalize per cell
+		if normalize:
+			t1=np.log(np.exp(dtn).sum(axis=0))-np.log(1E6)
+			dtn-=t1
+	else:
+		if issparse and d.size<np.prod(d.shape)/100:
+			#Sparse
+			t4=np.array(d.nonzero())
+			d=d.toarray()
+			dmean=np.ones(d.shape)*t2[0]
+			dmean[t4[0],t4[1]]=[t2[x] for x in d[t4[0],t4[1]]]
+			if varscale!=0:
+				dvar=np.ones(d.shape)*t3[0]
+				dvar[t4[0],t4[1]]=[t3[x] for x in d[t4[0],t4[1]]]
+			else:
+				dvar=np.zeros(d.shape)
+		else:
+			if issparse:
+				d=d.toarray()
+			if not np.issubdtype(d.dtype,np.integer):
+				d=d.astype(int,copy=False)
+			dmean=t2[d]
+			dvar=t3[d] if varscale!=0 else np.zeros(d.shape)
 
-	dvar*=varscale
-	dtn=np.random.randn(nt,nc)*np.sqrt(dvar)+dmean if varscale!=0 else dmean.copy()
-	assert dtn.shape==(nt,nc)
+		dvar*=varscale
+		dtn=np.random.randn(nt,nc)*np.sqrt(dvar)+dmean if varscale!=0 else dmean.copy()
+		assert dtn.shape==(nt,nc)
 
-	#Normalize per cell
-	if normalize:
-		t1=np.log(np.exp(dtn).sum(axis=0))-np.log(1E6)
-		dmean-=t1
-		dtn-=t1
+		#Normalize per cell
+		if normalize:
+			t1=np.log(np.exp(dtn).sum(axis=0))-np.log(1E6)
+			dmean-=t1
+			dtn-=t1
 
 	t1=d.sum(axis=0)
 	if (t1==0).any():
@@ -131,8 +174,11 @@ def lcpm(reads,normalize=True,nth=0,ntot=None,varscale=0,seed=None):
 	if dcov.ndim==3:
 		dcov=dcov.reshape(dcov.shape[0],dcov.shape[2])
 	assert np.isfinite(dtn).all()
-	assert np.isfinite(dmean).all()
-	assert np.isfinite(dvar).all() and (dvar>=0).all()
+	if not lowmem:
+		assert np.isfinite(dmean).all()
+		assert np.isfinite(dvar).all() and (dvar>=0).all()
+	else:
+		dmean=dvar=None
 	assert dcov.shape==(3,nc) and np.isfinite(dcov).all()
 	return (dtn,dmean,dvar,dcov)
 

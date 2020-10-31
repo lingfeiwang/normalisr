@@ -54,9 +54,9 @@ def compute_var(dt,dc,stepmax=1,eps=1E-6):
 
 	Parameters
 	----------
-	dt:		numpy.ndarray(shape=(n_gene,n_cell)).
+	dt:		numpy.ndarray(shape=(n_gene,n_cell))
 		Bayesian LogCPM expression level matrix.
-	dc:		numpy.ndarray(shape=(n_cov,n_cell)).
+	dc:		numpy.ndarray(shape=(n_cov,n_cell))
 		Covariate matrix.
 	stepmax:int
 		Maximum number of EM-like iterations of mean and variance normalization. Stop of iteration is also possible when relative accuracy target is reached. Defaults to 1, indicating no iterative normalization.
@@ -101,7 +101,7 @@ def compute_var(dt,dc,stepmax=1,eps=1E-6):
 		d1scale=np.sqrt(((td1.T-d1mean)**2).mean(axis=0))
 		d1sscalenew=np.log(np.sqrt((((td1.T-d1mean)/d1scale)**2).mean(axis=1)))
 		lr2.fit(dx.T,d1sscalenew.T)
-		d1sscalenew=lr2.predict(dx.T).flatten()
+		d1sscalenew=lr2.predict(dx.T).ravel()
 
 		#Determine relative difference
 		d1sscalenew=np.exp(d1sscalenew)*d1sscale
@@ -114,14 +114,48 @@ def compute_var(dt,dc,stepmax=1,eps=1E-6):
 			best=d1sscale
 		logging.debug('Step {}, maximum relative difference: {}'.format(n,t1))
 
-	d1sscale=1/best.astype(float)
+	d1sscale=1/best.astype(float,copy=False)
 	d1sscale/=d1sscale.min()
 	assert d1sscale.shape==(ns,)
 	assert np.isfinite(d1sscale).all()
 	assert (d1sscale>0).all()
 	return d1sscale
 
-def normvar(dt,dc,w,wt,dextra=None,cat=1,keepvar=True):
+def normvar1(dt,dc,w2):
+	"""A single-threaded function to normalize a subset of transcriptome.
+
+	Should not be invoked directly.
+
+	Parameters
+	-----------
+	dt:		numpy.ndarray(shape=(n_gene,n_cell))
+		Bayesian logCPM matrix subset.
+	dc:		numpy.ndarray(shape=(n_cov,n_cell))
+		Covariate matrix.
+	w2:		numpy.ndarray(shape=(n_gene,))
+		Intemediate weight computed in normvar for subset.
+
+	Returns
+	--------
+	numpy.ndarray(shape=(n_gene,n_cell))
+		Normalized gene expression matrix subset.
+
+	"""
+	import numpy as np
+	from .association import inv_rank
+	#Remove covariates
+	dtn=[]
+	for xi in range(dt.shape[0]):
+		dc1=dc*w2[xi]
+		t1=np.matmul(dc1,dc1.T)
+		t1i,r=inv_rank(t1)
+		if r<=0:
+			raise RuntimeError('Zero-rank covariates found.')
+		dtn.append(dt[xi]-np.matmul(dc1.T,np.matmul(t1i,np.matmul(dc1,dt[xi]))))
+	dtn=np.array(dtn)
+	return dtn
+
+def normvar(dt,dc,w,wt,dextra=None,cat=1,nth=1,bs=500,keepvar=True):
 	"""Performs mean and variance normalizations.
 
 	Expression levels are normalized at mean and then at variance levels. Effectively each gene x is multiplied by w**wt[x] before removing covariates as dc*(w**wt[x]). Continuous covariates are normalized at variance levels. Effectively covariates are transformed to dc*w. Therefore, variance normalization for expression are scaled differently for each gene.
@@ -145,6 +179,10 @@ def normvar(dt,dc,w,wt,dextra=None,cat=1,keepvar=True):
 		* 1:	No except constant-1 covariate (intercept)
 		* 2:	Yes
 
+	nth:	int
+		Number of parallel threads.
+	bs:		int
+		Batch size for each job.
 	keepvar:bool
 		Whether to maintain the variance of each gene invariant in mean normalization step. If so, expression variances are scaled back to original after mean normalization and before variance normalization. This function only affects overall variance level and its downstreams (e.g. differential expression log fold change). This function would not affect P-value computation. Default: True.
 
@@ -160,7 +198,7 @@ def normvar(dt,dc,w,wt,dextra=None,cat=1,keepvar=True):
 		
 	"""
 	import numpy as np
-	from .association import inv_rank
+	from .parallel import autopooler
 	if np.any([x.ndim!=2 for x in [dt,dc]]):
 		raise ValueError('dt and dc should have 2 dimensions.')
 	if np.any([x.ndim!=1 for x in [w,wt]]):
@@ -185,16 +223,13 @@ def normvar(dt,dc,w,wt,dextra=None,cat=1,keepvar=True):
 	if keepvar:
 		dv=dt.mean(axis=1)
 		dv=np.sqrt(((dt.T-dv)**2).mean(axis=0))
-	#Remove covariates
-	dtn=[]
-	for xi in range(nt):
-		dc1=dc*w2[xi]
-		t1=np.matmul(dc1,dc1.T)
-		t1i,r=inv_rank(t1)
-		if r<=0:
-			raise RuntimeError('Zero-rank covariates found.')
-		dtn.append(dt[xi]-np.matmul(dc1.T,np.matmul(t1i,np.matmul(dc1,dt[xi]))))
-	dtn=np.array(dtn)
+	#Remove covariates in parallel
+	it=map(lambda x:[x,min(x+bs,nt)],range(0,nt,bs))
+	it=map(lambda x:[normvar1,(dt[x[0]:x[1]],dc,w2[x[0]:x[1]]),dict()],it)
+	dtn=autopooler(nth,it,dummy=True)
+	assert len(dtn)>0
+	dtn=np.concatenate(dtn,axis=0)
+
 	if keepvar:
 		dv2=np.sqrt((dtn**2).mean(axis=1))
 		dtn=(dtn.T*((dv/dv2)**wt)).T

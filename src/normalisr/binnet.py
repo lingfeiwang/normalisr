@@ -123,7 +123,7 @@ def bh(pv,weight=None):
 		pv2[xi]=min(pv2[xi],pv2[xi+1])
 
 	#Recover index
-	ans=pv2[ids].astype(pv.dtype)
+	ans=pv2[ids].astype(pv.dtype,copy=False)
 	assert ans.shape==pv.shape
 	return ans
 

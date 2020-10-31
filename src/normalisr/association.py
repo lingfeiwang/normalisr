@@ -192,6 +192,8 @@ def association_test_1(vx,vy,dx,dy,dc,dci,dcr,dimreduce=0):
 		raise ValueError('Negative dcr detected.')
 	elif dcr>nc:
 		raise ValueError('dcr higher than covariate dimension.')
+	if n<=dcr+dimreduce+1:
+		raise ValueError('Insufficient number of cells: must be greater than degrees of freedom removed + covariate + 1.')
 
 	nx=dx.shape[0]
 	ny=dy.shape[0]
@@ -220,7 +222,9 @@ def association_test_1(vx,vy,dx,dy,dc,dci,dcr,dimreduce=0):
 	assert (ansp>=0).all() and (ansp<=1+1E-8).all()
 	ansp=beta.cdf(1-ansp,(n-1-dcr-dimreduce)/2,0.5)
 	assert ansp.shape==(nx,ny) and ansc.shape==(nx,ny) and ansa.shape==(nx,ny,nc) and ansvx.shape==(nx,) and ansvy.shape==(ny,)
-	assert np.isfinite(ansp).all() and np.isfinite(ansc).all() and np.isfinite(ansa).all() and np.isfinite(ansvx).all() and np.isfinite(ansvy).all()
+	assert np.isfinite(ansp).all()
+	assert np.isfinite(ansc).all() and np.isfinite(ansa).all()
+	assert np.isfinite(ansvx).all() and np.isfinite(ansvy).all()
 	assert (ansp>=0).all() and (ansp<=1).all() and (ansvx>=0).all() and (ansvy>=0).all()
 	return [vx,vy,ansp,ansc,ansa,ansvx,ansvy]
 
@@ -316,14 +320,17 @@ def association_test_2(vx,vy,dx,dy,dc,sselectx,dimreduce=0):
 			t1=1
 		ansvx[xi]=t1
 		ansvy[xi]=(dy1**2).mean(axis=1)
-		ansc[xi]=np.matmul(dx1,dy1.T).flatten()/(ns*t1)
+		ansc[xi]=np.matmul(dx1,dy1.T).ravel()/(ns*t1)
 		if r>0:
-			ansa[xi]=ccy-np.repeat(ansc[xi].reshape(ny,1),nc,axis=1)*ccx.flatten()
+			ansa[xi]=ccy-np.repeat(ansc[xi].reshape(ny,1),nc,axis=1)*ccx.ravel()
 		ansp[xi]=(ansc[xi]**2)*t1/ansvy[xi]
 
 	#Compute p-values
 	assert (ansp>=0).all() and (ansp<=1+1E-8).all()
-	ansp=beta.cdf(1-ansp,(sselectx.sum(axis=1)-1-ansn.T-dimreduce).T/2,0.5)
+	t1=(sselectx.sum(axis=1)-1-ansn.T-dimreduce).T
+	if (t1<=0).any():
+		raise RuntimeError('Insufficient number of cells: must be greater than degrees of freedom removed + covariate + 1.')
+	ansp=beta.cdf(1-ansp,t1/2,0.5)
 	assert ansp.shape==(nx,ny) and ansc.shape==(nx,ny) and ansa.shape==(nx,ny,nc) and ansvx.shape==(nx,) and ansvy.shape==(nx,ny)
 	assert np.isfinite(ansp).all() and np.isfinite(ansc).all() and np.isfinite(ansa).all() and np.isfinite(ansvx).all() and np.isfinite(ansvy).all()
 	assert (ansp>=0).all() and (ansp<=1).all() and (ansvx>=0).all() and (ansvy>=0).all()
@@ -443,7 +450,7 @@ def association_test_4(vx,vy,prod,prody,prodyy,na,dimreduce=0,**ka):
 			dxx=(prod[vx+xi,vx+xi]-float(np.matmul(ccx,prod[t0,[vx+xi]])))/n
 			ccy=np.matmul(prody[t0].T,t1i)
 			dyy=(prodyy-(ccy.T*prody[t0]).sum(axis=0))/n
-			dxy=(prody[vx+xi]-np.matmul(ccy,prod[t0,[vx+xi]]).flatten())/n
+			dxy=(prody[vx+xi]-np.matmul(ccy,prod[t0,[vx+xi]]).ravel())/n
 		if dxx==0:
 			#X completely explained by covariate. Should never happen in theory.
 			dxx=1
@@ -456,22 +463,137 @@ def association_test_4(vx,vy,prod,prody,prodyy,na,dimreduce=0,**ka):
 
 	#Compute p-values
 	assert (ansp>=0).all() and (ansp<=1+1E-8).all()
-	ansp=beta.cdf(1-ansp,(n-1-ansn-dimreduce)/2,0.5)
+	t1=n-1-ansn-dimreduce
+	if (t1<=0).any():
+		raise RuntimeError('Insufficient number of cells: must be greater than degrees of freedom removed + covariate + 1.')
+	ansp=beta.cdf(1-ansp,t1/2,0.5)
 	assert ansp.shape==(lenx,ny) and ansc.shape==(lenx,ny) and ansa.shape==(lenx,ny,nc) and ansvx.shape==(lenx,) and ansvy.shape==(lenx,ny)
 	assert np.isfinite(ansp).all() and np.isfinite(ansc).all() and np.isfinite(ansa).all() and np.isfinite(ansvx).all() and np.isfinite(ansvy).all()
 	assert (ansp>=0).all() and (ansp<=1).all() and (ansvx>=0).all() and (ansvy>=0).all()
 	return [vx,vy,ansp,ansc,ansa,ansvx,ansvy]
 
+def association_tests_1(dx,dy,dc,bsx=0,bsy=0,nth=1,lowmem=True,**ka):
+	"""Performs association tests between all pairs of two (or one) variables. Performs parallel computation with multiple processes on the same machine.
 
+	Model for differential expression between X and Y:
+		Y=gamma*X+alpha*C+epsilon,
 
+		epsilon~i.i.d. N(0,sigma**2).
 
+	Test statistic: conditional R**2 (or proportion of variance explained) between Y and X.
 
+	Null hypothesis: gamma=0.
 
+	Parameters
+	-----------
+	dx:		numpy.ndarray(shape=(n_x,n_cell)).
+		Normalized matrix X.
+	dy:		numpy.ndarray(shape=(n_y,n_cell),dtype=float) or None
+		Normalized matrix Y. If None, indicates dy=dx, i.e. self-association between pairs within X.
+	dc:		numpy.ndarray(shape=(n_cov,n_cell),dtype=float)
+		Normalized covariate matrix C.
+	bsx:	int
+		Batch size, i.e. number of Xs in each computing batch. Defaults to 500.
+	bsy:	int
+		Batch size, i.e. number of Xs in each computing batch. Defaults to 500.
+	nth:	int
+		Number of parallel processes. Set to 0 for using automatically detected CPU counts.
+	ka:		dict
+		Keyword arguments passed to normalisr.association.association_test_1. See below.
 
+	Returns
+	--------
+	P-values:	numpy.ndarray(shape=(n_x,n_y))
+		Differential expression P-value matrix.
+	dot:		numpy.ndarray(shape=(n_x,n_y))
+		Inner product between X and Y pairs, after removing covariates.
+	alpha:		numpy.ndarray(shape=(n_x,n_y,n_cov)) or None.
+		Maximum likelihood estimators of alpha, separatly tested for each grouping. None if lowmem=True.
+	varx:		numpy.ndarray(shape=(n_x))
+		Variance of grouping after removing covariates.
+	vary:		numpy.ndarray(shape=(n_y))
+		Variance of gene expression after removing covariates.
+		It can depend on the grouping being tested depending on parameter single.
 
+	Keyword arguments
+	--------------------------------
+	dimreduce:	numpy.ndarray(shape=(n_y,),dtype=int) or int
+		If dy doesn't have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.
+	"""
+	import numpy as np
+	import logging
+	import itertools
+	from .parallel import autopooler
+	ka0=dict(ka)
+	if dy is None:
+		dy=dx
+		samexy=True
+	else:
+		samexy=False
+	#Ignore single-valued genotypes
+	nx,ns=dx.shape
+	ny=dy.shape[0]
+	nc=dc.shape[0]
+	if bsx==0:
+		#Transfer 1GB data max
+		bsx=int((2**30-dc.dtype.itemsize*nc*ns)//(2*dx.dtype.itemsize*ns))
+		bsx=min(bsx,500)
+		if samexy:
+			logging.info('Using automatic batch size: {}'.format(bsx))
+		else:
+			logging.info('Using automatic batch size for X: {}'.format(bsx))
+	if bsy==0:
+		if samexy:
+			bsy=bsx
+		else:
+			bsy=int((2**30-dc.dtype.itemsize*nc*ns)//(2*dy.dtype.itemsize*ns))
+			bsy=min(bsy,500)
+			logging.info('Using automatic batch size for Y: {}'.format(bsy))
 
+	it=itertools.product(map(lambda x:[x,min(x+bsx,nx)],range(0,nx,bsx)),map(lambda x:[x,min(x+bsy,ny)],range(0,ny,bsy)))
+	if samexy:
+		it=filter(lambda x:x[0][0]<=x[1][0],it)
+	if nc>0 and (dc!=0).any():
+		dci,dcr=inv_rank(np.matmul(dc,dc.T))
+	else:
+		dci=None
+		dcr=0
+	it=map(lambda x:[association_test_1,(x[0][0],x[1][0],dx[x[0][0]:x[0][1]],dy[x[1][0]:x[1][1]],dc,dci,dcr),ka0],it)
 
+	ans0=autopooler(nth,it,dummy=True)
+	assert len(ans0)>0
+	ans=np.ones((nx,ny),dtype=dy.dtype)
+	ansdot=np.zeros((nx,ny),dtype=dy.dtype)
+	ansa=None if lowmem else np.zeros((nx,ny,nc),dtype=dy.dtype)
+	ansvx=np.zeros((nx),dtype=dy.dtype)
+	ansvy=ansvx if samexy else np.zeros((ny),dtype=dy.dtype)
+	for xi in ans0:
+		ans[xi[0]:xi[0]+xi[2].shape[0],xi[1]:xi[1]+xi[2].shape[1]]=xi[2]
+		ansdot[xi[0]:xi[0]+xi[3].shape[0],xi[1]:xi[1]+xi[3].shape[1]]=xi[3]
+		if not lowmem:
+			ansa[xi[0]:xi[0]+xi[4].shape[0],xi[1]:xi[1]+xi[4].shape[1]]=xi[4]
+		ansvx[xi[0]:xi[0]+xi[5].shape[0]]=xi[5]
+		ansvy[xi[1]:xi[1]+xi[6].shape[0]]=xi[6]
 
+	#Convert from coef to dot
+	ansdot=(ansdot.T*ansvx).T
+	if samexy:
+		ans=np.triu(ans,1)
+		ans=ans+ans.T
+		ansdot=np.triu(ansdot,1)
+		ansdot=ansdot+ansdot.T
+		if not lowmem:
+			ansa=np.triu(ansa.transpose(2,0,1))
+			ansa=(ansa+ansa.transpose(0,2,1)).transpose(1,2,0)
+
+	assert ans.shape==(nx,ny) and ansdot.shape==(nx,ny)and ansvx.shape==(nx,) and ansvy.shape==(ny,)
+	assert np.isfinite(ans).all() and np.isfinite(ansdot).all() and np.isfinite(ansvx).all() and np.isfinite(ansvy).all()
+	assert (ans>=0).all() and (ans<=1).all() and (ansvx>=0).all() and (ansvy>=0).all()
+	if not lowmem:
+		assert ansa.shape==(nx,ny,nc) and np.isfinite(ansa).all()
+	else:
+		ansa=None
+	return (ans,ansdot,ansa,ansvx,ansvy)
 
 
 
