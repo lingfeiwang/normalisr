@@ -22,7 +22,7 @@ def coex(dt, dc, **ka):
 	dc:		numpy.ndarray(shape=(n_cov,n_cell),dtype=float)
 		Normalized covariate matrix C.
 	ka:		dict
-		Keyword arguments passed to normalisr.association.association_test_1. See below.
+		Keyword arguments passed to normalisr.association.association_tests. See below.
 
 	Returns
 	-------
@@ -43,10 +43,9 @@ def coex(dt, dc, **ka):
 		If dt doesn't have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.
 
 	"""
-	from .association import association_tests_1
-	ans = association_tests_1(dt, None, dc, lowmem=True, **ka)
-
-	return (ans[0], ans[1], ans[3])
+	from .association import association_tests
+	ans = association_tests(dt, None, dc, **ka)
+	return (ans[0], ans[1], ans[4])
 
 
 assert __name__ != "__main__"

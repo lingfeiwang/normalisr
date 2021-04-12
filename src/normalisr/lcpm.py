@@ -24,7 +24,8 @@ def lcpm(reads,
 		 ntot=None,
 		 varscale=0,
 		 seed=None,
-		 lowmem=True):
+		 lowmem=True,
+		 nocov=False):
 	"""Computes Bayesian log CPM from raw read counts.
 
 	The technical sampling process is modelled as a Binomial distribution. The logCPM given read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.
@@ -47,6 +48,8 @@ def lcpm(reads,
 		Initial random seed if set.
 	lowmem:		bool
 		Low memory mode disable mean and var in Returns and therefore saves memory.
+	nocov:		bool
+		Whether to skip producing covariate variables. If True, output cov=None
 
 	Returns
 	-------
@@ -114,8 +117,10 @@ def lcpm(reads,
 	if lowmem:
 		if issparse and d.size < np.prod(d.shape) / 100:
 			# Sparse
-			t4 = np.array(d.nonzero())
+			t4 = np.array(np.nonzero(d))
 			d = d.toarray()
+			if not np.issubdtype(d.dtype, np.integer):
+				d = d.astype(int, copy=False)
 			if varscale != 0:
 				# First compute variance
 				dtn = np.ones(d.shape) * t3[0]
@@ -155,6 +160,8 @@ def lcpm(reads,
 			# Sparse
 			t4 = np.array(d.nonzero())
 			d = d.toarray()
+			if not np.issubdtype(d.dtype, np.integer):
+				d = d.astype(int, copy=False)
 			dmean = np.ones(d.shape) * t2[0]
 			dmean[t4[0], t4[1]] = [t2[x] for x in d[t4[0], t4[1]]]
 			if varscale != 0:
@@ -181,20 +188,23 @@ def lcpm(reads,
 			dmean -= t1
 			dtn -= t1
 
-	t1 = d.sum(axis=0)
-	if (t1 == 0).any():
-		raise ValueError('Found cell with no read at all. Please remove.')
-	t1 = np.log(t1)
-	dcov = np.array([t1, d.shape[0] - (d != 0).sum(axis=0), t1**2])
-	if dcov.ndim == 3:
-		dcov = dcov.reshape(dcov.shape[0], dcov.shape[2])
+	if nocov:
+		dcov = None
+	else:
+		t1 = d.sum(axis=0)
+		if (t1 == 0).any():
+			raise ValueError('Found cell with no read at all. Please remove.')
+		t1 = np.log(t1)
+		dcov = np.array([t1, d.shape[0] - (d != 0).sum(axis=0), t1**2])
+		if dcov.ndim == 3:
+			dcov = dcov.reshape(dcov.shape[0], dcov.shape[2])
+		assert dcov.shape == (3, nc) and np.isfinite(dcov).all()
 	assert np.isfinite(dtn).all()
 	if not lowmem:
 		assert np.isfinite(dmean).all()
 		assert np.isfinite(dvar).all() and (dvar >= 0).all()
 	else:
 		dmean = dvar = None
-	assert dcov.shape == (3, nc) and np.isfinite(dcov).all()
 	return (dtn, dmean, dvar, dcov)
 
 

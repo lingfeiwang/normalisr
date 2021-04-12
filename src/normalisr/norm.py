@@ -128,7 +128,7 @@ def compute_var(dt, dc, stepmax=1, eps=1E-6):
 	return d1sscale
 
 
-def normvar1(dt, dc, w2):
+def normvar1(dt, dc, w2=None):
 	"""A single-threaded function to normalize a subset of transcriptome.
 
 	Should not be invoked directly.
@@ -150,20 +150,33 @@ def normvar1(dt, dc, w2):
 	"""
 	import numpy as np
 	from .association import inv_rank
-	# Remove covariates
-	dtn = []
-	for xi in range(dt.shape[0]):
-		dc1 = dc * w2[xi]
-		t1 = np.matmul(dc1, dc1.T)
+
+	if w2 is not None:
+		dtn = []
+		dtn = [normvar1(dt[[x]], dc * w2[x]) for x in range(dt.shape[0])]
+		dtn = np.concatenate(dtn, axis=0)
+	else:
+		t1 = np.matmul(dc, dc.T)
 		t1i, r = inv_rank(t1)
 		if r <= 0:
 			raise RuntimeError('Zero-rank covariates found.')
-		dtn.append(dt[xi] - np.matmul(dc1.T, np.matmul(t1i, np.matmul(dc1, dt[xi]))))
-	dtn = np.array(dtn)
+		dtn = dt - np.matmul(dc.T, np.matmul(t1i, np.matmul(dc, dt.T))).T
+		assert np.isfinite(dtn).all()
+
+	assert dtn.shape == dt.shape
 	return dtn
 
 
-def normvar(dt, dc, w, wt, dextra=None, cat=1, nth=1, bs=500, keepvar=True):
+def normvar(dt,
+			dc,
+			w,
+			wt,
+			dextra=None,
+			cat=1,
+			nth=1,
+			bs=500,
+			keepvar=True,
+			normmean=False):
 	"""Performs mean and variance normalizations.
 
 	Expression levels are normalized at mean and then at variance levels. Effectively each gene x is multiplied by w**wt[x] before removing covariates as dc*(w**wt[x]). Continuous covariates are normalized at variance levels. Effectively covariates are transformed to dc*w. Therefore, variance normalization for expression are scaled differently for each gene.
@@ -193,6 +206,8 @@ def normvar(dt, dc, w, wt, dextra=None, cat=1, nth=1, bs=500, keepvar=True):
 		Batch size for each job.
 	keepvar:bool
 		Whether to maintain the variance of each gene invariant in mean normalization step. If so, expression variances are scaled back to original after mean normalization and before variance normalization. This function only affects overall variance level and its downstreams (e.g. differential expression log fold change). This function would not affect P-value computation. Default: True.
+	normmean:bool
+		Whether to remove covariates from expression at mean level. This is accounted for in hypothesis testing with linear models so this option makes no difference here. However, this can be helpful for other purposes of analyses.
 
 	Returns
 	--------
@@ -234,15 +249,17 @@ def normvar(dt, dc, w, wt, dextra=None, cat=1, nth=1, bs=500, keepvar=True):
 		dv = np.sqrt(((dt.T - dv)**2).mean(axis=0))
 	# Remove covariates in parallel
 	it = map(lambda x: [x, min(x + bs, nt)], range(0, nt, bs))
-	it = map(lambda x: [normvar1, (dt[x[0]:x[1]], dc, w2[x[0]:x[1]]), dict()], it)
+	it = map(lambda x: [normvar1, (dt[x[0]:x[1]], dc), {'w2': w2[x[0]:x[1]]}], it)
 	dtn = autopooler(nth, it, dummy=True)
 	assert len(dtn) > 0
 	dtn = np.concatenate(dtn, axis=0)
 
 	if keepvar:
+		# Keep original variance
 		dv2 = np.sqrt((dtn**2).mean(axis=1))
 		dtn = (dtn.T * ((dv / dv2)**wt)).T
 
+	# Normalize covariates
 	if cat == 2:
 		dcn = dc * w
 	elif cat == 1:
@@ -255,6 +272,11 @@ def normvar(dt, dc, w, wt, dextra=None, cat=1, nth=1, bs=500, keepvar=True):
 		dcn[t0] = dc[t0] * w
 	else:
 		raise ValueError('Invalid cat value.')
+
+	if normmean:
+		# Remove normalized covariates from expression
+		dtn = normvar1(dtn, dcn)
+
 	ans = [dtn, dcn]
 	assert dtn.shape == dt.shape and dcn.shape == dc.shape
 	assert np.isfinite(dtn).all() and np.isfinite(dcn).all()

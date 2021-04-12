@@ -3,7 +3,7 @@
 
 pkgname="normalisr"
 pkgnamefull="Normalisr Offers Robust Modelling of Associations Linearly In Single-cell RNA-seq"
-version=[0,5,0]
+version=[0,6,0]
 license="BSD-3-Clause"
 url="https://github.com/lingfeiwang/"+pkgname
 author="Lingfei Wang"

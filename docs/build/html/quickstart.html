@@ -37,13 +37,13 @@
 <h1>Normalisr<a class="headerlink" href="#normalisr" title="Permalink to this headline">¶</a></h1>
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/normalisr"><img alt="https://img.shields.io/pypi/v/normalisr?color=informational" src="https://img.shields.io/pypi/v/normalisr?color=informational" /></a>
 <a class="reference external image-reference" href="https://zenodo.org/badge/latestdoi/242889849"><img alt="https://zenodo.org/badge/242889849.svg" src="https://zenodo.org/badge/242889849.svg" /></a>
-<p>Normalisr is a parameter-free normalization-association two-step inferential framework for scRNA-seq that solves case-control differential expression, co-expression, and pooled CRISPRi scRNA-seq screen under one umbrella of linear association testing. Normalisr addresses sparsity and technical confounding challenges of scRNA-seq with posterior mRNA abundances, nonlinear cellular summary covariates, and mean and variance normalization. All these enable linear association testing to achieve optimal sensitivity, specificity, and speed in all above scenarios.</p>
-<p>Normalisr follows the conventional framework of normalization/imputation of scRNA-seq, and aims to recover the true, biological, but hidden expression levels which any analyses may then operate upon. Then, linear association testing provides a unified inferential framework with numerous advantages: (i) exact P-value estimation without permutation, (ii) native removal of covariates as fixed effects, (iii) non-parametric robustness, (iv) unbeatable time and memory complexities, and (v) extension potentials such as variations in genetic relatedness.</p>
+<p>Normalisr is a parameter-free normalization-association two-step inferential framework for scRNA-seq that solves case-control differential expression, co-expression, and pooled CRISPR scRNA-seq screen analysis with linear association testing. By systematically detecting and removing nonlinear confounding from library size, Normalisr achieves high sensitivity, specificity, speed, and generalizability across multiple scRNA-seq protocols and experimental conditions with unbiased P-value estimation.</p>
+<p>Normalisr first removes confounding technical noises from raw read counts to recover the biological variations. Then, linear association testing provides a unified inferential framework with several advantages: (i) exact P-value estimation without permutation, (ii) native removal of covariates (<em>e.g.</em> batches, house-keeping programs, and untested gRNAs) as fixed effects, and (iii) computational efficiency.</p>
 <p>Normalisr is written in Python3 and provides a command-line and a python functional interface. You can read more about Normalisr from our preprint (See <a class="reference internal" href="#references">References</a>).</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Normalisr is on <a class="reference external" href="https://pypi.org/project/normalisr">PyPI</a> and can be installed with pip: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">normalisr</span></code>. You can also install Normalisr from github: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">git+https://github.com/lingfeiwang/normalisr.git</span></code>. Make sure you have added Normalisr’s install path into PATH environment before using the command-line interface (See <a class="reference internal" href="#faq">FAQ</a>). Normalisr’s installation should take less than a minute.</p>
-<p>There are more advanced installation methods but if you want that, most likely you already know how to do it ;). If not, give me a shout (See <a class="reference internal" href="#contact">Contact</a>).</p>
+<p>There are more advanced installation methods but if you want that, most likely you already know how to do it. If not, give me a shout (See <a class="reference internal" href="#contact">Contact</a>).</p>
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
@@ -78,19 +78,11 @@
 </div>
 <div class="section" id="contact">
 <h2>Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h2>
-<p>We look forward to your feedbacks or questions of any kind.</p>
-<ul class="simple">
-<li><p>Regarding method and manuscript, please reach me by email (<a class="reference external" href="mailto:Lingfei&#46;Wang&#46;CN&#37;&#52;&#48;gmail&#46;com">Lingfei<span>&#46;</span>Wang<span>&#46;</span>CN<span>&#64;</span>gmail<span>&#46;</span>com</a>).</p></li>
-<li><p>Regarding Normalisr package, please raise an issue on <a class="reference external" href="https://github.com/lingfeiwang/normalisr/issues/new">github</a> or reach me by email (<a class="reference external" href="mailto:Lingfei&#46;Wang&#46;github&#37;&#52;&#48;outlook&#46;com">Lingfei<span>&#46;</span>Wang<span>&#46;</span>github<span>&#64;</span>outlook<span>&#46;</span>com</a>).</p></li>
-</ul>
+<p>Pease raise an issue on <a class="reference external" href="https://github.com/lingfeiwang/normalisr/issues/new">github</a> or reach me by e-mail (<a class="reference external" href="mailto:Lingfei&#46;Wang&#46;github&#37;&#52;&#48;outlook&#46;com">Lingfei<span>&#46;</span>Wang<span>&#46;</span>github<span>&#64;</span>outlook<span>&#46;</span>com</a> or contact on the manuscript).</p>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<p>Please find the currently available materials below:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/lingfeiwang/normalisr/raw/master/docs/preprint/ICML2020-WCB.pdf">Abstract</a> submitted to ICML 2020 Workshop on Computational Biology</p></li>
-</ul>
-<p><a class="reference internal" href="#contact">Contact</a> me if you would like to request more details.</p>
+<p>TBA</p>
 </div>
 <div class="section" id="faq">
 <h2>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h2>
@@ -101,7 +93,7 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt>I installed Normalisr but typing <code class="docutils literal notranslate"><span class="pre">normalisr</span></code> says ‘command not found’.</dt><dd><p></p>
+<dt>I installed Normalisr but typing <code class="docutils literal notranslate"><span class="pre">normalisr</span></code> says ‘command not found’.</dt><dd><p>See below.</p>
 </dd>
 </dl>
 </li>

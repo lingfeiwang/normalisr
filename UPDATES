@@ -1,3 +1,14 @@
+0.6.0:
+Added new association test normalisr.association.association_test_5 that uses given mask to determine X-Y pairs in hypothesis tests with multi-variate regression. This option is not yet available on command line.
+Refactored normalisr.association, normalisr.de, and normalisr.coex.
+Added option 'lowmem' to reduce memory footprint by not returning regression coefficients of covariates.
+
+0.5.0:
+Parallelled lcpm
+More error messages and documentation
+Adding memory efficient options in several functions as the default
+Updated examples accordingly
+
 0.4.2:
 Updated dependency and examples.
 
