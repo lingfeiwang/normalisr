@@ -56,7 +56,7 @@ Pease raise an issue on `github <https://github.com/lingfeiwang/normalisr/issues
 
 References
 ==========================
-TBA
+* Normalisr: normalization and association testing for single-cell CRISPR screen and co-expression, Lingfei Wang, preprint 2021. https://www.biorxiv.org/content/10.1101/2021.04.12.439500v1
 
 FAQ
 ==========================
