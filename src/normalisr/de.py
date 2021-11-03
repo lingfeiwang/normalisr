@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 
-def de(dg, dt, dc, bs=0, single=0, **ka):
+def de(dg, dt, dc, bs=0, **ka):
 	"""Performs differential expression analyses for all genes against all groupings.
 
 	Allows multiple options to treat other groupings when testing on one grouping.
@@ -51,9 +51,9 @@ def de(dg, dt, dc, bs=0, single=0, **ka):
 	single:	int
 		Option to deal with other groupings when testing one groupings v.s. gene expression.
 
-		* 0:	Ignores other groupings.
-		* 1:	Excludes all cells belonging to any other grouping (value==1), assuming dg=0,1 only.
-		* 4:	Treats other groupings as covariates for mean expression.
+		* 0:    Ignores other groupings (default).
+		* 1:	Excludes all cells belonging to any other grouping (value==1), assuming dg=0,1 only. This is suitable for low-MOI single-cell CRISPR screens.
+		* 4:	Treats other groupings as covariates for mean expression. This is suitable for high-MOI single-cell CRISPR screens.
 
 	lowmem:	bool
 		Whether to replace alpha in return value with None to save memory.
@@ -86,10 +86,6 @@ def de(dg, dt, dc, bs=0, single=0, **ka):
 	import itertools
 	from .association import association_tests
 	from .parallel import autopooler
-	if single == 3:
-		raise NotImplementedError(
-			'single=3 is obsolete. Please use single=4 for the same function with improved efficiency.'
-		)
 	ka0 = dict(ka)
 
 	# Ignore single-valued genotypes

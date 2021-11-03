@@ -1,3 +1,8 @@
+0.6.1:
+Bug correction for parameter single in normalisr.de.de not being passed through correctly.
+Updated documentation.
+Compatibility updates.
+
 0.6.0:
 Added new association test normalisr.association.association_test_5 that uses given mask to determine X-Y pairs in hypothesis tests with multi-variate regression. This option is not yet available on command line.
 Refactored normalisr.association, normalisr.de, and normalisr.coex.

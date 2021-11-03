@@ -84,11 +84,11 @@ def inv_rank(m, tol=1E-8, method='auto', logger=None, mpc=0, qr=0, **ka):
 			# Find enough n_components by increasing in steps
 			while True:
 				if qr == 1:
-					s = svd(m, n2, power_iteration_normalizer='QR', **ka)
+					s = svd(m, n2, power_iteration_normalizer='QR', random_state=0, **ka)
 				elif qr > 1:
-					s = svd(m, n2, power_iteration_normalizer='QR', n_iter=qr, **ka)
+					s = svd(m, n2, power_iteration_normalizer='QR', n_iter=qr, random_state=0, **ka)
 				else:
-					s = svd(m, n2, **ka)
+					s = svd(m, n2, random_state=0, **ka)
 				if n2 == n or s[1][-1] <= tol * s[1][0] or mpc > 0:
 					break
 				n2 += np.min([n2, n - n2])
@@ -586,10 +586,7 @@ def association_test_5(vx,
 					   dimreduce=0,
 					   lowmem=False,
 					   **ka):
-	"""Like association_test_1, but regards all other (untested) x's as covariates when testing each x.
-	Also allows for dx==dy setting, where neither tested x or y is regarded as a covariate.
-
-	See association_test_1 for additional details. Other x's are treated as covariates but their coefficients (alpha) would not be returned to reduce memory footprint.
+	"""Like association_test_4, but uses mask to determine which X can affect which Y. Under development.
 
 	Parameters
 	----------
@@ -605,6 +602,8 @@ def association_test_5(vx,
 		(dy**2).sum(axis=1). If None, indicating dx==dy and skipping tested y as a covariate.
 	na:		tuple
 		(n_x,n_y,n_cov,n_cell,lenx). Numbers of (x's, y's, covariates, cells, x's to compute association for)
+	mask:   numpy.ndarray(shape=(n_x,n_y),dtype=bool)
+		Prior constraint on whether each X can affect each Y.
 	dimreduce:	numpy.ndarray(shape=(ny,),dtype='uint') or int.
 		If each vector y doesn't have full rank in the first place, this parameter is the loss of degree of freedom to allow for accurate P-value computation.
 	lowmem:	bool
@@ -803,6 +802,14 @@ def association_tests(dx,
 		Whether to replace alpha in return value with None to save memory
 	return_dot:	bool
 		Whether to return dot product betwen dx and dy instead of coefficient gamma
+	single:	int
+		Type of association test to perform that determines which cells and covariates are used for each association test between X and Y. Accepts the following values:
+
+		* 0:    Simple pairwise association test between each X and Y across all cells.
+		* 1:    Association test for each X uses only cells that have all zeros in dx for all other Xs. A typical application is low-MOI CRISPR screen.
+		* 4:    Association test for each X uses all cells but regarding all other Xs as covariates that confound mean expression levels. This is suitable for high-MOI CRISPR screen.
+		* 5:    Similar with 4 but uses mask to determine which X can affect which Y. Under development.
+
 	bs4:	int
 		Batch size for matrix product when single=4. Defaults to 500.
 	ka:		dict
@@ -826,6 +833,8 @@ def association_tests(dx,
 	--------------------------------
 	dimreduce:	numpy.ndarray(shape=(n_y,),dtype=int) or int
 		If dy doesn't have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.
+	mask:		numpy.ndarray(shape=(n_x,n_y),dtype=bool)
+		Whether each X can affect each Y. Only active for single==5.
 
 	"""
 	import numpy as np

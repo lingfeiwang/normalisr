@@ -8,11 +8,11 @@ Normalisr
    :target: https://zenodo.org/badge/latestdoi/242889849
 
 
-Normalisr is a parameter-free normalization-association two-step inferential framework for scRNA-seq that solves case-control differential expression, co-expression, and pooled CRISPR scRNA-seq screen analysis with linear association testing. By systematically detecting and removing nonlinear confounding from library size, Normalisr achieves high sensitivity, specificity, speed, and generalizability across multiple scRNA-seq protocols and experimental conditions with unbiased P-value estimation.
+Normalisr is a parameter-free normalization and statistical association testing framework that unifies single-cell differential expression, co-expression, and pooled single-cell CRISPR screen analyses with linear models. By systematically detecting and removing nonlinear confounders arising from library size at mean and variance levels, Normalisr achieves high sensitivity, specificity, speed, and generalizability across multiple scRNA-seq protocols and experimental conditions with unbiased p-value estimation.
 
-Normalisr first removes confounding technical noises from raw read counts to recover the biological variations. Then, linear association testing provides a unified inferential framework with several advantages: (i) exact P-value estimation without permutation, (ii) native removal of covariates (*e.g.* batches, house-keeping programs, and untested gRNAs) as fixed effects, and (iii) computational efficiency.
+Normalisr first removes confounding technical noises from raw read counts to recover the biological variations. Then, linear association testing provides a unified inferential framework with several advantages: (i) exact P-value estimation without permutation, (ii) native removal of covariates (*e.g.* batches, house-keeping programs, and untested gRNAs) as fixed effects, (iii) robustness against read count distribution distortions with enough (> 100) cells, and (iv) computational efficiency.
 
-Normalisr is written in Python3 and provides a command-line and a python functional interface. You can read more about Normalisr from our preprint (See References_).
+Normalisr is in python and provides a command-line and a python functional interface. You can read more about Normalisr from our preprint (See References_).
 
 Installation
 =============
@@ -52,7 +52,7 @@ You can find more details in the respective examples.
 
 Contact
 ==========================
-Pease raise an issue on `github <https://github.com/lingfeiwang/normalisr/issues/new>`_ or reach me by e-mail (Lingfei.Wang.github@outlook.com or contact on the manuscript).
+Pease raise an issue on `github <https://github.com/lingfeiwang/normalisr/issues/new>`_.
 
 References
 ==========================

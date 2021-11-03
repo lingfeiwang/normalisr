@@ -88,7 +88,7 @@ def compute_var(dt, dc, stepmax=1, eps=1E-6):
 	d1 = dt
 	dx = dc
 	ns = dc.shape[1]
-	lr = lr0(normalize=False, fit_intercept=False)
+	lr = lr0(fit_intercept=False)
 	lr2 = lr0(fit_intercept=True)
 
 	d1sscale = np.ones(ns)

@@ -305,10 +305,13 @@ def pccovt(dt, dc, namet, genes, condcov=True):
 
 	if condcov and nc > 0:
 		# Remove covariates
+		from sklearn.preprocessing import StandardScaler as ss0
 		from sklearn.linear_model import LinearRegression as lr0
-		lr = lr0(fit_intercept=True, normalize=True)
-		lr.fit(dc.T, dt.T)
-		dt = dt - lr.predict(dc.T).T
+		ss = ss0()
+		lr = lr0(fit_intercept=True)
+		t1 = ss.fit_transform(dc.T)
+		lr.fit(t1, dt.T)
+		dt = dt - lr.predict(t1).T
 
 	nametd = dict(zip(namet, range(len(namet))))
 	ans = pc1(dt[[nametd[x] for x in genes]])

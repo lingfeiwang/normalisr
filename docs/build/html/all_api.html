@@ -38,7 +38,7 @@
 <span id="normalisr-association"></span><h2>normalisr.association<a class="headerlink" href="#module-normalisr.association" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="normalisr.association.association_test_1">
-<code class="sig-prename descclassname">normalisr.association.</code><code class="sig-name descname">association_test_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vx</span></em>, <em class="sig-param"><span class="n">vy</span></em>, <em class="sig-param"><span class="n">dx</span></em>, <em class="sig-param"><span class="n">dy</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">dci</span></em>, <em class="sig-param"><span class="n">dcr</span></em>, <em class="sig-param"><span class="n">dimreduce</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.association.association_test_1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">normalisr.association.</code><code class="sig-name descname">association_test_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vx</span></em>, <em class="sig-param"><span class="n">vy</span></em>, <em class="sig-param"><span class="n">dx</span></em>, <em class="sig-param"><span class="n">dy</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">dci</span></em>, <em class="sig-param"><span class="n">dcr</span></em>, <em class="sig-param"><span class="n">dimreduce</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">lowmem</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.association.association_test_1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fast linear association testing in single-cell non-cohort settings with covariates.</p>
 <dl>
 <dt>Single threaded version to allow for parallel computing wrapper. Mainly used for naive differential expression and co-expression. Computes exact P-value and effect size (gamma) with the model for linear association testing between each vector x and vector y:</dt><dd><p>y=gamma*x+alpha*C+epsilon,</p>
@@ -58,6 +58,7 @@
 <li><p><strong>dci</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cov</em><em>)</em><em>)</em><em></em>) – Low-rank inverse matrix of dc*dc.T.</p></li>
 <li><p><strong>dcr</strong> (<em>int</em>) – Rank of dci.</p></li>
 <li><p><strong>dimreduce</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>ny</em><em>,</em><em>)</em><em>,</em><em>dtype='uint'</em><em>) or </em><em>int.</em>) – If each vector y doesn’t have full rank in the first place, this parameter is the loss of degree of freedom to allow for accurate P-value computation.</p></li>
+<li><p><strong>lowmem</strong> (<em>bool</em>) – Whether to save memory by neither computing nor returning alpha.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -66,7 +67,7 @@
 <li><p><strong>vy</strong> (<em>any</em>) – vy from input for information passing.</p></li>
 <li><p><strong>pv</strong> (<em>numpy.ndarray(shape=(n_x,n_y))</em>) – P-values of association testing (gamma==0).</p></li>
 <li><p><strong>gamma</strong> (<em>numpy.ndarray(shape=(n_x,n_y))</em>) – Maximum likelihood estimator of gamma in model.</p></li>
-<li><p><strong>alpha</strong> (<em>numpy.ndarray(shape=(n_x,n_y,n_cov))</em>) – Maximum likelihood estimator of alpha in model.</p></li>
+<li><p><strong>alpha</strong> (<em>numpy.ndarray(shape=(n_x,n_y,n_cov)) or None</em>) – Maximum likelihood estimator of alpha in model if not lowmem else None.</p></li>
 <li><p><strong>var_x</strong> (<em>numpy.ndarray(shape=(n_x,))</em>) – Variance of dx unexplained by covariates C.</p></li>
 <li><p><strong>var_y</strong> (<em>numpy.ndarray(shape=(n_y,))</em>) – Variance of dy unexplained by covariates C.</p></li>
 </ul>
@@ -77,7 +78,7 @@
 
 <dl class="py function">
 <dt id="normalisr.association.association_test_2">
-<code class="sig-prename descclassname">normalisr.association.</code><code class="sig-name descname">association_test_2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vx</span></em>, <em class="sig-param"><span class="n">vy</span></em>, <em class="sig-param"><span class="n">dx</span></em>, <em class="sig-param"><span class="n">dy</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">sselectx</span></em>, <em class="sig-param"><span class="n">dimreduce</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.association.association_test_2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">normalisr.association.</code><code class="sig-name descname">association_test_2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vx</span></em>, <em class="sig-param"><span class="n">vy</span></em>, <em class="sig-param"><span class="n">dx</span></em>, <em class="sig-param"><span class="n">dy</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">sselectx</span></em>, <em class="sig-param"><span class="n">dimreduce</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">lowmem</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.association.association_test_2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Like association_test_1, but takes a different subset of samples for each x.</p>
 <p>See association_test_1 for additional details.</p>
 <dl class="field-list simple">
@@ -90,6 +91,7 @@
 <li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>)</em><em></em>) – Covariate matrix as C.</p></li>
 <li><p><strong>sselectx</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_x</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype=bool</em><em>)</em>) – Subset of samples to use for each x.</p></li>
 <li><p><strong>dimreduce</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>ny</em><em>,</em><em>)</em><em>,</em><em>dtype='uint'</em><em>) or </em><em>int.</em>) – If each vector y doesn’t have full rank in the first place, this parameter is the loss of degree of freedom to allow for accurate P-value computation.</p></li>
+<li><p><strong>lowmem</strong> (<em>bool</em>) – Whether to save memory by neither computing nor returning alpha.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -98,7 +100,7 @@
 <li><p><strong>vy</strong> (<em>any</em>) – vy from input for information passing.</p></li>
 <li><p><strong>pv</strong> (<em>numpy.ndarray(shape=(n_x,n_y))</em>) – P-values of association testing (gamma==0).</p></li>
 <li><p><strong>gamma</strong> (<em>numpy.ndarray(shape=(n_x,n_y))</em>) – Maximum likelihood estimator of gamma in model.</p></li>
-<li><p><strong>alpha</strong> (<em>numpy.ndarray(shape=(n_x,n_y,n_cov))</em>) – Maximum likelihood estimator of alpha in model.</p></li>
+<li><p><strong>alpha</strong> (<em>numpy.ndarray(shape=(n_x,n_y,n_cov)) or None</em>) – Maximum likelihood estimator of alpha in model if not lowmem else None.</p></li>
 <li><p><strong>var_x</strong> (<em>numpy.ndarray(shape=(n_x,))</em>) – Variance of dx unexplained by covariates C.</p></li>
 <li><p><strong>var_y</strong> (<em>numpy.ndarray(shape=(n_x,n_y))</em>) – Variance of dy unexplained by covariates C.</p></li>
 </ul>
@@ -109,8 +111,9 @@
 
 <dl class="py function">
 <dt id="normalisr.association.association_test_4">
-<code class="sig-prename descclassname">normalisr.association.</code><code class="sig-name descname">association_test_4</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vx</span></em>, <em class="sig-param"><span class="n">vy</span></em>, <em class="sig-param"><span class="n">prod</span></em>, <em class="sig-param"><span class="n">prody</span></em>, <em class="sig-param"><span class="n">prodyy</span></em>, <em class="sig-param"><span class="n">na</span></em>, <em class="sig-param"><span class="n">dimreduce</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">ka</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.association.association_test_4" title="Permalink to this definition">¶</a></dt>
-<dd><p>Like association_test_1, but regards all other x’s as covariates when testing each x.</p>
+<code class="sig-prename descclassname">normalisr.association.</code><code class="sig-name descname">association_test_4</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vx</span></em>, <em class="sig-param"><span class="n">vy</span></em>, <em class="sig-param"><span class="n">prod</span></em>, <em class="sig-param"><span class="n">prody</span></em>, <em class="sig-param"><span class="n">prodyy</span></em>, <em class="sig-param"><span class="n">na</span></em>, <em class="sig-param"><span class="n">dimreduce</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">lowmem</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">ka</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.association.association_test_4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like association_test_1, but regards all other (untested) x’s as covariates when testing each x.
+Also allows for dx==dy setting, where neither tested x or y is regarded as a covariate.</p>
 <p>See association_test_1 for additional details. Other x’s are treated as covariates but their coefficients (alpha) would not be returned to reduce memory footprint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -118,10 +121,11 @@
 <li><p><strong>vx</strong> (<em>any</em>) – Starting indices of dx.</p></li>
 <li><p><strong>vy</strong> (<em>any</em>) – Starting indices of dy. Only used for information passing.</p></li>
 <li><p><strong>prod</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_x+n_cov</em><em>,</em><em>n_x+n_cov</em><em>)</em><em>)</em>) – A&#64;A.T, where A=numpy.block([dx,dc]).</p></li>
-<li><p><strong>prody</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_x+n_cov</em><em>,</em><em>n_y</em><em>)</em><em>)</em>) – A&#64;dy.T, where A=numpy.block([dx,dc])</p></li>
-<li><p><strong>prodyy</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_y</em><em>,</em><em>)</em><em>)</em>) – (dy**2).sum(axis=1)</p></li>
+<li><p><strong>prody</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_x+n_cov</em><em>,</em><em>n_y</em><em>)</em><em>) or </em><em>None</em>) – A&#64;dy.T, where A=numpy.block([dx,dc]). If None, indicating dx==dy and skipping tested y as a covariate.</p></li>
+<li><p><strong>prodyy</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_y</em><em>,</em><em>)</em><em>) or </em><em>None</em>) – (dy**2).sum(axis=1). If None, indicating dx==dy and skipping tested y as a covariate.</p></li>
 <li><p><strong>na</strong> (<em>tuple</em>) – (n_x,n_y,n_cov,n_cell,lenx). Numbers of (x’s, y’s, covariates, cells, x’s to compute association for)</p></li>
 <li><p><strong>dimreduce</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>ny</em><em>,</em><em>)</em><em>,</em><em>dtype='uint'</em><em>) or </em><em>int.</em>) – If each vector y doesn’t have full rank in the first place, this parameter is the loss of degree of freedom to allow for accurate P-value computation.</p></li>
+<li><p><strong>lowmem</strong> (<em>bool</em>) – Whether to save memory by neither computing nor returning alpha.</p></li>
 <li><p><strong>ka</strong> (<em>dict</em>) – Keyword arguments passed to inv_rank.</p></li>
 </ul>
 </dd>
@@ -131,9 +135,9 @@
 <li><p><strong>vy</strong> (<em>any</em>) – vy from input for information passing.</p></li>
 <li><p><strong>pv</strong> (<em>numpy.ndarray(shape=(n_x,n_y))</em>) – P-values of association testing (gamma==0).</p></li>
 <li><p><strong>gamma</strong> (<em>numpy.ndarray(shape=(n_x,n_y))</em>) – Maximum likelihood estimator of gamma in model.</p></li>
-<li><p><strong>alpha</strong> (<em>numpy.ndarray(shape=(n_x,n_y,n_cov))</em>) – Maximum likelihood estimator of alpha in model.</p></li>
-<li><p><strong>var_x</strong> (<em>numpy.ndarray(shape=(lenx,))</em>) – Variance of dx unexplained by covariates C.</p></li>
-<li><p><strong>var_y</strong> (<em>numpy.ndarray(shape=(lenx,n_y))</em>) – Variance of dy unexplained by covariates C.</p></li>
+<li><p><strong>alpha</strong> (<em>numpy.ndarray(shape=(n_x,n_y,n_cov)) or None</em>) – Maximum likelihood estimator of alpha in model if not lowmem else None.</p></li>
+<li><p><strong>var_x</strong> (<em>numpy.ndarray(shape=(lenx,)) or None</em>) – Variance of dx unexplained by covariates C if prody is not None else None.</p></li>
+<li><p><strong>var_y</strong> (<em>numpy.ndarray(shape=(lenx,n_y))</em>) – Variance of dy unexplained by covariates C or untested x.</p></li>
 </ul>
 </p>
 </dd>
@@ -141,9 +145,45 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="normalisr.association.association_tests_1">
-<code class="sig-prename descclassname">normalisr.association.</code><code class="sig-name descname">association_tests_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dx</span></em>, <em class="sig-param"><span class="n">dy</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">bsx</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">bsy</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">lowmem</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">ka</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.association.association_tests_1" title="Permalink to this definition">¶</a></dt>
+<dt id="normalisr.association.association_test_5">
+<code class="sig-prename descclassname">normalisr.association.</code><code class="sig-name descname">association_test_5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vx</span></em>, <em class="sig-param"><span class="n">vy</span></em>, <em class="sig-param"><span class="n">prod</span></em>, <em class="sig-param"><span class="n">prody</span></em>, <em class="sig-param"><span class="n">prodyy</span></em>, <em class="sig-param"><span class="n">na</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">dimreduce</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">lowmem</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">ka</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.association.association_test_5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like association_test_4, but uses mask to determine which X can affect which Y. Under development.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vx</strong> (<em>any</em>) – Starting indices of dx.</p></li>
+<li><p><strong>vy</strong> (<em>any</em>) – Starting indices of dy. Only used for information passing.</p></li>
+<li><p><strong>prod</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_x+n_cov</em><em>,</em><em>n_x+n_cov</em><em>)</em><em>)</em>) – A&#64;A.T, where A=numpy.block([dx,dc]).</p></li>
+<li><p><strong>prody</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_x+n_cov</em><em>,</em><em>n_y</em><em>)</em><em>) or </em><em>None</em>) – A&#64;dy.T, where A=numpy.block([dx,dc]). If None, indicating dx==dy and skipping tested y as a covariate.</p></li>
+<li><p><strong>prodyy</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_y</em><em>,</em><em>)</em><em>) or </em><em>None</em>) – (dy**2).sum(axis=1). If None, indicating dx==dy and skipping tested y as a covariate.</p></li>
+<li><p><strong>na</strong> (<em>tuple</em>) – (n_x,n_y,n_cov,n_cell,lenx). Numbers of (x’s, y’s, covariates, cells, x’s to compute association for)</p></li>
+<li><p><strong>mask</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_x</em><em>,</em><em>n_y</em><em>)</em><em>,</em><em>dtype=bool</em><em>)</em>) – Whether each X can affect each Y.</p></li>
+<li><p><strong>dimreduce</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>ny</em><em>,</em><em>)</em><em>,</em><em>dtype='uint'</em><em>) or </em><em>int.</em>) – If each vector y doesn’t have full rank in the first place, this parameter is the loss of degree of freedom to allow for accurate P-value computation.</p></li>
+<li><p><strong>lowmem</strong> (<em>bool</em>) – Whether to save memory by neither computing nor returning alpha.</p></li>
+<li><p><strong>ka</strong> (<em>dict</em>) – Keyword arguments passed to inv_rank.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>vx</strong> (<em>any</em>) – vx from input for information passing.</p></li>
+<li><p><strong>vy</strong> (<em>any</em>) – vy from input for information passing.</p></li>
+<li><p><strong>pv</strong> (<em>numpy.ndarray(shape=(n_x,n_y))</em>) – P-values of association testing (gamma==0).</p></li>
+<li><p><strong>gamma</strong> (<em>numpy.ndarray(shape=(n_x,n_y))</em>) – Maximum likelihood estimator of gamma in model.</p></li>
+<li><p><strong>alpha</strong> (<em>numpy.ndarray(shape=(n_x,n_y,n_cov)) or None</em>) – Maximum likelihood estimator of alpha in model if not lowmem else None.</p></li>
+<li><p><strong>var_x</strong> (<em>numpy.ndarray(shape=(lenx,n_y))</em>) – Variance of dx unexplained by covariates C or untested x.</p></li>
+<li><p><strong>var_y</strong> (<em>numpy.ndarray(shape=(lenx,n_y))</em>) – Variance of dy unexplained by covariates C or untested x.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="normalisr.association.association_tests">
+<code class="sig-prename descclassname">normalisr.association.</code><code class="sig-name descname">association_tests</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dx</span></em>, <em class="sig-param"><span class="n">dy</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">bsx</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">bsy</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">lowmem</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">return_dot</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">single</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">bs4</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">ka</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.association.association_tests" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs association tests between all pairs of two (or one) variables. Performs parallel computation with multiple processes on the same machine.</p>
+<p>Allows multiple options to treat other/untested dx when testing on one (see parameter <em>single</em>).</p>
+<p>Performs parallel computation with multiple processes on the same machine.</p>
 <dl>
 <dt>Model for differential expression between X and Y:</dt><dd><p>Y=gamma*X+alpha*C+epsilon,</p>
 <p>epsilon~i.i.d. N(0,sigma**2).</p>
@@ -158,24 +198,39 @@
 <li><p><strong>dy</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_y</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype=float</em><em>) or </em><em>None</em>) – Normalized matrix Y. If None, indicates dy=dx, i.e. self-association between pairs within X.</p></li>
 <li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype=float</em><em>)</em>) – Normalized covariate matrix C.</p></li>
 <li><p><strong>bsx</strong> (<em>int</em>) – Batch size, i.e. number of Xs in each computing batch. Defaults to 500.</p></li>
-<li><p><strong>bsy</strong> (<em>int</em>) – Batch size, i.e. number of Xs in each computing batch. Defaults to 500.</p></li>
+<li><p><strong>bsy</strong> (<em>int</em>) – Batch size, i.e. number of Xs in each computing batch. Defaults to 500. Ignored if dy is None.</p></li>
 <li><p><strong>nth</strong> (<em>int</em>) – Number of parallel processes. Set to 0 for using automatically detected CPU counts.</p></li>
-<li><p><strong>ka</strong> (<em>dict</em>) – Keyword arguments passed to normalisr.association.association_test_1. See below.</p></li>
+<li><p><strong>lowmem</strong> (<em>bool</em>) – Whether to replace alpha in return value with None to save memory</p></li>
+<li><p><strong>return_dot</strong> (<em>bool</em>) – Whether to return dot product betwen dx and dy instead of coefficient gamma</p></li>
+<li><p><strong>single</strong> (<em>int</em>) – <p>Type of association test to perform that determines which cells and covariates are used for
+each association test between X and Y. Accepts the following values:</p>
+<ul>
+<li><p>0:    Simple pairwise association test between each X and Y across all cells.</p></li>
+<li><p>1:    Association test for each X uses only cells that have all zeros in dx for all other Xs. A typical application is low-MOI CRISPR screen.</p></li>
+<li><p>4:    Association test for each X uses all cells but regarding all other Xs as covariates that confound mean expression levels. This is suitable for high-MOI CRISPR screen.</p></li>
+<li><p>5:    Similar with 4 but uses mask to determine which X can affect which Y. Under development.</p></li>
+</ul>
+</p></li>
+<li><p><strong>bs4</strong> (<em>int</em>) – Batch size for matrix product when single=4. Defaults to 500.</p></li>
+<li><p><strong>ka</strong> (<em>dict</em>) – Keyword arguments passed to normalisr.association.association_test_X. See below.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>P-values</strong> (<em>numpy.ndarray(shape=(n_x,n_y))</em>) – Differential expression P-value matrix.</p></li>
-<li><p><strong>dot</strong> (<em>numpy.ndarray(shape=(n_x,n_y))</em>) – Inner product between X and Y pairs, after removing covariates.</p></li>
-<li><p><strong>alpha</strong> (<em>numpy.ndarray(shape=(n_x,n_y,n_cov)) or None.</em>) – Maximum likelihood estimators of alpha, separatly tested for each grouping. None if lowmem=True.</p></li>
-<li><p><strong>varx</strong> (<em>numpy.ndarray(shape=(n_x))</em>) – Variance of grouping after removing covariates.</p></li>
-<li><p><strong>vary</strong> (<em>numpy.ndarray(shape=(n_y))</em>) – Variance of gene expression after removing covariates.
-It can depend on the grouping being tested depending on parameter single.</p></li>
+<li><p><strong>dot/gamma</strong> (<em>numpy.ndarray(shape=(n_x,n_y))</em>) – If return_dot, inner product between X and Y pairs after removing covariates. Otherwise, matrix gamma.</p></li>
+<li><p><strong>alpha</strong> (<em>numpy.ndarray(shape=(n_x,n_y,n_cov)) or None</em>) – Maximum likelihood estimators of alpha, separatly tested for each grouping if not lowmem else None.</p></li>
+<li><p><strong>varx</strong> (<em>numpy.ndarray(shape=(n_x)) or numpy.ndarray(shape=(n_x,n_y)) or None</em>) – Variance of grouping after removing covariates if dy is not None and single!=5 else None</p></li>
+<li><p><strong>vary</strong> (<em>numpy.ndarray(shape=(n_y)) if single==0 else numpy.ndarray(shape=(n_x,n_y))</em>) – Variance of gene expression after removing covariates.
+Its shape depends on parameter single.</p></li>
 </ul>
 </p>
 </dd>
 <dt class="field-odd">Keyword Arguments</dt>
-<dd class="field-odd"><p><strong>dimreduce</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_y</em><em>,</em><em>)</em><em>,</em><em>dtype=int</em><em>) or </em><em>int</em>) – If dy doesn’t have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dimreduce</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_y</em><em>,</em><em>)</em><em>,</em><em>dtype=int</em><em>) or </em><em>int</em>) – If dy doesn’t have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.</p></li>
+<li><p><strong>mask</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_x</em><em>,</em><em>n_y</em><em>)</em><em>,</em><em>dtype=bool</em><em>)</em>) – Whether each X can affect each Y. Only active for single==5.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -352,7 +407,7 @@ Only effective when method=sklearn, or =auto that defaults to sklearn.
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dt</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype=float</em><em>)</em>) – Normalized expression matrix X.</p></li>
 <li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype=float</em><em>)</em>) – Normalized covariate matrix C.</p></li>
-<li><p><strong>ka</strong> (<em>dict</em>) – Keyword arguments passed to normalisr.association.association_test_1. See below.</p></li>
+<li><p><strong>ka</strong> (<em>dict</em>) – Keyword arguments passed to normalisr.association.association_tests. See below.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -378,7 +433,7 @@ Only effective when method=sklearn, or =auto that defaults to sklearn.
 <span id="normalisr-de"></span><h2>normalisr.de<a class="headerlink" href="#module-normalisr.de" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="normalisr.de.de">
-<code class="sig-prename descclassname">normalisr.de.</code><code class="sig-name descname">de</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dg</span></em>, <em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">bs</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">single</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">ka</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.de.de" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">normalisr.de.</code><code class="sig-name descname">de</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dg</span></em>, <em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">bs</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">ka</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.de.de" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs differential expression analyses for all genes against all groupings.</p>
 <p>Allows multiple options to treat other groupings when testing on one grouping.</p>
 <p>Performs parallel computation with multiple processes on the same machine.</p>
@@ -397,15 +452,7 @@ Only effective when method=sklearn, or =auto that defaults to sklearn.
 <li><p><strong>dc</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_cov</em><em>,</em><em>n_cell</em><em>)</em><em>,</em><em>dtype=float</em><em>)</em>) – Normalized covariate matrix C.</p></li>
 <li><p><strong>bs</strong> (<em>int</em>) – Batch size, i.e. number of groupings and genes in each computing batch.
 For single=0,1, splits groupings &amp; genes. Defaults to 500.
-For single=4, only allows bs=0 (default automatic setting).</p></li>
-<li><p><strong>nth</strong> (<em>int</em>) – Number of parallel processes. Set to 0 for using automatically detected CPU counts.</p></li>
-<li><p><strong>single</strong> (<em>int</em>) – <p>Option to deal with other groupings when testing one groupings v.s. gene expression.</p>
-<ul>
-<li><p>0:    Ignores other groupings.</p></li>
-<li><p>1:    Excludes all cells belonging to any other grouping (value==1), assuming dg=0,1 only.</p></li>
-<li><p>4:    Treats other groupings as covariates for mean expression.</p></li>
-</ul>
-</p></li>
+For single=4, defaults to splitting grouping by 10 and not on genes.</p></li>
 <li><p><strong>ka</strong> (<em>dict</em>) – Keyword arguments passed to normalisr.association.association_test_*. See below.</p></li>
 </ul>
 </dd>
@@ -413,7 +460,7 @@ For single=4, only allows bs=0 (default automatic setting).</p></li>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>P-values</strong> (<em>numpy.ndarray(shape=(n_group,n_gene))</em>) – Differential expression P-value matrix.</p></li>
 <li><p><strong>gamma</strong> (<em>numpy.ndarray(shape=(n_group,n_gene))</em>) – Differential expression log fold change matrix.</p></li>
-<li><p><strong>alpha</strong> (<em>numpy.ndarray(shape=(n_group,n_gene,n_cov))</em>) – Maximum likelihood estimators of alpha, separatly tested for each grouping.</p></li>
+<li><p><strong>alpha</strong> (<em>numpy.ndarray(shape=(n_group,n_gene,n_cov)) or None</em>) – Maximum likelihood estimators of alpha, separatly tested for each grouping if not lowmem else None.</p></li>
 <li><p><strong>varg</strong> (<em>numpy.ndarray(shape=(n_group))</em>) – Variance of grouping after removing covariates.</p></li>
 <li><p><strong>vart</strong> (<em>numpy.ndarray(shape=(n_group,n_gene))</em>) – Variance of gene expression after removing covariates.
 It can depend on the grouping being tested depending on parameter single.</p></li>
@@ -422,12 +469,29 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 </dd>
 <dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>single</strong> (<em>int</em>) – <p>Option to deal with other groupings when testing one groupings v.s. gene expression.</p>
+<ul>
+<li><p>0:    Ignores other groupings (default).</p></li>
+<li><dl class="simple">
+<dt>1:    Excludes all cells belonging to any other grouping (value==1), assuming dg=0,1 only.</dt><dd><p>This is suitable for low-MOI CRISPR screens.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>4:    Treats other groupings as covariates for mean expression.</dt><dd><p>This is suitable for high-MOI CRISPR screens.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p></li>
+<li><p><strong>lowmem</strong> (<em>bool</em>) – Whether to replace alpha in return value with None to save memory.</p></li>
+<li><p><strong>nth</strong> (<em>int</em>) – Number of parallel processes. Set to 0 for using automatically detected CPU counts.</p></li>
 <li><p><strong>dimreduce</strong> (<em>numpy.ndarray</em><em>(</em><em>shape=</em><em>(</em><em>n_gene</em><em>,</em><em>)</em><em>,</em><em>dtype=int</em><em>) or </em><em>int</em>) – If dt doesn’t have full rank, such as due to prior covariate removal (although the recommended method is to leave covariates in dc), this parameter allows to specify the loss of ranks/degrees of freedom to allow for accurate P-value computation. Default is 0, indicating no rank loss.</p></li>
 <li><p><strong>method</strong> (<em>str</em><em>, </em><em>only for single=4</em>) – <p>Method to compute eigenvalues in SVD-based matrix inverse (for removal of covariates):</p>
 <ul>
 <li><p>auto: Uses scipy for n_matrix&lt;mpc or mpc==0 and sklearn otherwise. Default.</p></li>
 <li><p>scipy: Uses scipy.linalg.svd.</p></li>
-<li><p>scipys: NOT IMPLEMENTED.Uses scipy.sparse.linalg.svds.</p></li>
+<li><p>scipys: NOT IMPLEMENTED. Uses scipy.sparse.linalg.svds.</p></li>
 <li><p>sklearn: Uses sklearn.decomposition.TruncatedSVD.</p></li>
 </ul>
 </p></li>
@@ -580,7 +644,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <span id="normalisr-lcpm"></span><h2>normalisr.lcpm<a class="headerlink" href="#module-normalisr.lcpm" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="normalisr.lcpm.lcpm">
-<code class="sig-prename descclassname">normalisr.lcpm.</code><code class="sig-name descname">lcpm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reads</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ntot</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">varscale</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lowmem</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.lcpm.lcpm" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">normalisr.lcpm.</code><code class="sig-name descname">lcpm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reads</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ntot</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">varscale</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lowmem</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">nocov</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.lcpm.lcpm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes Bayesian log CPM from raw read counts.</p>
 <p>The technical sampling process is modelled as a Binomial distribution. The logCPM given read counts is a Bayesian inference problem and follows (shifted) Beta distribution. We use the expectation of posterior logCPM as the estimated expression levels. Resampling function is also provided to account for variances in the posterior distribution.</p>
 <p><strong>Warning</strong>: Modifying keyword arguments other than nth or seed is neither recommended nor supported for function ‘lcpm’. Do so at your own risk.</p>
@@ -594,6 +658,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <li><p><strong>varscale</strong> (<em>float</em>) – Resamples estimated expression using the posterior Beta distribution. varscale sets the scale of variance than its actual value from the posterior distribution. Defaults to 0, to compute expectation with no variance.</p></li>
 <li><p><strong>seed</strong> (<em>int</em>) – Initial random seed if set.</p></li>
 <li><p><strong>lowmem</strong> (<em>bool</em>) – Low memory mode disable mean and var in Returns and therefore saves memory.</p></li>
+<li><p><strong>nocov</strong> (<em>bool</em>) – Whether to skip producing covariate variables. If True, output cov=None</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -725,7 +790,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 
 <dl class="py function">
 <dt id="normalisr.norm.normvar">
-<code class="sig-prename descclassname">normalisr.norm.</code><code class="sig-name descname">normvar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">wt</span></em>, <em class="sig-param"><span class="n">dextra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cat</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">bs</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">keepvar</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.norm.normvar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">normalisr.norm.</code><code class="sig-name descname">normvar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">wt</span></em>, <em class="sig-param"><span class="n">dextra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cat</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">nth</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">bs</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">keepvar</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">normmean</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.norm.normvar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs mean and variance normalizations.</p>
 <p>Expression levels are normalized at mean and then at variance levels. Effectively each gene x is multiplied by w**wt[x] before removing covariates as dc*(w**wt[x]). Continuous covariates are normalized at variance levels. Effectively covariates are transformed to dc*w. Therefore, variance normalization for expression are scaled differently for each gene.</p>
 <dl class="field-list simple">
@@ -746,6 +811,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 <li><p><strong>nth</strong> (<em>int</em>) – Number of parallel threads.</p></li>
 <li><p><strong>bs</strong> (<em>int</em>) – Batch size for each job.</p></li>
 <li><p><strong>keepvar</strong> (<em>bool</em>) – Whether to maintain the variance of each gene invariant in mean normalization step. If so, expression variances are scaled back to original after mean normalization and before variance normalization. This function only affects overall variance level and its downstreams (e.g. differential expression log fold change). This function would not affect P-value computation. Default: True.</p></li>
+<li><p><strong>normmean</strong> (<em>bool</em>) – Whether to remove covariates from expression at mean level. This is accounted for in hypothesis testing with linear models so this option makes no difference here. However, this can be helpful for other purposes of analyses.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -762,7 +828,7 @@ It can depend on the grouping being tested depending on parameter single.</p></l
 
 <dl class="py function">
 <dt id="normalisr.norm.normvar1">
-<code class="sig-prename descclassname">normalisr.norm.</code><code class="sig-name descname">normvar1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">w2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.norm.normvar1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">normalisr.norm.</code><code class="sig-name descname">normvar1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">dc</span></em>, <em class="sig-param"><span class="n">w2</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalisr.norm.normvar1" title="Permalink to this definition">¶</a></dt>
 <dd><p>A single-threaded function to normalize a subset of transcriptome.</p>
 <p>Should not be invoked directly.</p>
 <dl class="field-list simple">
