@@ -39,11 +39,11 @@
 <a class="reference external image-reference" href="https://zenodo.org/badge/latestdoi/242889849"><img alt="https://zenodo.org/badge/242889849.svg" src="https://zenodo.org/badge/242889849.svg" /></a>
 <p>Normalisr is a parameter-free normalization and statistical association testing framework that unifies single-cell differential expression, co-expression, and pooled single-cell CRISPR screen analyses with linear models. By systematically detecting and removing nonlinear confounders arising from library size at mean and variance levels, Normalisr achieves high sensitivity, specificity, speed, and generalizability across multiple scRNA-seq protocols and experimental conditions with unbiased p-value estimation.</p>
 <p>Normalisr first removes confounding technical noises from raw read counts to recover the biological variations. Then, linear association testing provides a unified inferential framework with several advantages: (i) exact P-value estimation without permutation, (ii) native removal of covariates (<em>e.g.</em> batches, house-keeping programs, and untested gRNAs) as fixed effects, (iii) robustness against read count distribution distortions with enough (&gt; 100) cells, and (iv) computational efficiency.</p>
-<p>Normalisr is in python and provides a command-line and a python functional interface. You can read more about Normalisr from our preprint (See <a class="reference internal" href="#references">References</a>).</p>
+<p>Normalisr is in python and provides a command-line and a python functional interface. Normalisr is published in <a class="reference external" href="https://doi.org/10.1038/s41467-021-26682-1">Nature Communications</a> (2021).</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Normalisr is on <a class="reference external" href="https://pypi.org/project/normalisr">PyPI</a> and can be installed with pip: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">normalisr</span></code>. You can also install Normalisr from github: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">git+https://github.com/lingfeiwang/normalisr.git</span></code>. Make sure you have added Normalisr’s install path into PATH environment before using the command-line interface (See <a class="reference internal" href="#faq">FAQ</a>). Normalisr’s installation should take less than a minute.</p>
-<p>There are more advanced installation methods but if you want that, most likely you already know how to do it. If not, give me a shout (See <a class="reference internal" href="#contact">Contact</a>).</p>
+<p>There are more advanced installation methods but if you want that, most likely you already know how to do it. If not, give me a shout (See <a class="reference internal" href="#issues">Issues</a>).</p>
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
@@ -76,14 +76,14 @@
 <p>You can find several examples in the ‘examples’ folder, to cover all functions Normalisr currently provides. The example datasets have been scaled down to run on a 16GB-memory personal computer. Although they only serve as demonstrations of work here, the pipelines should be transferable to a full-scale, different dataset. Since Normalisr is non-parametric, the only adjustable parameters are for quality control and final cutoffs of differential or co-expression. You can change down-sampling parameters in the examples to run the full datasets on a larger computer.</p>
 <p>You can find more details in the respective examples.</p>
 </div>
-<div class="section" id="contact">
-<h2>Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="issues">
+<h2>Issues<a class="headerlink" href="#issues" title="Permalink to this headline">¶</a></h2>
 <p>Pease raise an issue on <a class="reference external" href="https://github.com/lingfeiwang/normalisr/issues/new">github</a>.</p>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Normalisr: normalization and association testing for single-cell CRISPR screen and co-expression, Lingfei Wang, preprint 2021. <a class="reference external" href="https://www.biorxiv.org/content/10.1101/2021.04.12.439500v1">https://www.biorxiv.org/content/10.1101/2021.04.12.439500v1</a></p></li>
+<li><p>Single-cell normalization and association testing unifying CRISPR screen and gene co-expression analyses with Normalisr, Lingfei Wang, Nature Communications 2021. <a class="reference external" href="https://doi.org/10.1038/s41467-021-26682-1">https://doi.org/10.1038/s41467-021-26682-1</a></p></li>
 </ul>
 </div>
 <div class="section" id="faq">
@@ -142,7 +142,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#examples-and-pipelines">Examples and pipelines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#issues">Issues</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#faq">FAQ</a></li>
 </ul>

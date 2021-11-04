@@ -1,13 +1,13 @@
 Metadata-Version: 2.1
 Name: normalisr
-Version: 0.6.1
+Version: 1.0.0
 Summary: Normalisr Offers Robust Modelling of Associations Linearly In Single-cell RNA-seq
 Home-page: https://github.com/lingfeiwang/normalisr
 Author: Lingfei Wang
 Author-email: Lingfei.Wang.github@outlook.com
 License: BSD-3-Clause
 Platform: UNKNOWN
-Classifier: Development Status :: 4 - Beta
+Classifier: Development Status :: 5 - Production/Stable
 Classifier: License :: OSI Approved :: BSD License
 Classifier: Environment :: Console
 Classifier: Intended Audience :: Science/Research
@@ -32,13 +32,13 @@ Normalisr is a parameter-free normalization and statistical association testing 
 
 Normalisr first removes confounding technical noises from raw read counts to recover the biological variations. Then, linear association testing provides a unified inferential framework with several advantages: (i) exact P-value estimation without permutation, (ii) native removal of covariates (*e.g.* batches, house-keeping programs, and untested gRNAs) as fixed effects, (iii) robustness against read count distribution distortions with enough (> 100) cells, and (iv) computational efficiency.
 
-Normalisr is in python and provides a command-line and a python functional interface. You can read more about Normalisr from our preprint (See References_).
+Normalisr is in python and provides a command-line and a python functional interface. Normalisr is published in `Nature Communications <https://doi.org/10.1038/s41467-021-26682-1>`_ (2021).
 
 Installation
 =============
 Normalisr is on `PyPI <https://pypi.org/project/normalisr>`_ and can be installed with pip: ``pip install normalisr``. You can also install Normalisr from github: ``pip install git+https://github.com/lingfeiwang/normalisr.git``. Make sure you have added Normalisr's install path into PATH environment before using the command-line interface (See FAQ_). Normalisr's installation should take less than a minute.
 
-There are more advanced installation methods but if you want that, most likely you already know how to do it. If not, give me a shout (See Contact_).
+There are more advanced installation methods but if you want that, most likely you already know how to do it. If not, give me a shout (See Issues_).
 
 Usage
 =====
@@ -70,13 +70,13 @@ You can find several examples in the 'examples' folder, to cover all functions N
 
 You can find more details in the respective examples.
 
-Contact
+Issues
 ==========================
 Pease raise an issue on `github <https://github.com/lingfeiwang/normalisr/issues/new>`_.
 
 References
 ==========================
-* Normalisr: normalization and association testing for single-cell CRISPR screen and co-expression, Lingfei Wang, preprint 2021. https://www.biorxiv.org/content/10.1101/2021.04.12.439500v1
+* Single-cell normalization and association testing unifying CRISPR screen and gene co-expression analyses with Normalisr, Lingfei Wang, Nature Communications 2021. https://doi.org/10.1038/s41467-021-26682-1
 
 FAQ
 ==========================

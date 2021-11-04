@@ -1,3 +1,6 @@
+1.0.0:
+Updated reference.
+
 0.6.1:
 Bug correction for parameter single in normalisr.de.de not being passed through correctly.
 Updated documentation.
