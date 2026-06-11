@@ -42,7 +42,7 @@ Normalisr provides a command-line and a python functional interface below. You c
 
 Documentation
 =============
-Documentations are available as `html <https://lingfeiwang.github.io/normalisr/index.html>`_ and `pdf <https://github.com/lingfeiwang/normalisr/raw/master/docs/build/latex/normalisr.pdf>`_.
+Documentations are available as `html <https://lingfeiwang.github.io/software/normalisr/index.html>`_ and `pdf <https://github.com/lingfeiwang/software/normalisr/raw/master/docs/build/latex/normalisr.pdf>`_.
 
 Examples and pipelines
 ==========================
